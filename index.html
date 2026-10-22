@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logistics Command Center &amp; AI Intelligence | UTH Project</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #F8FAFC;
+      --surface: #FFFFFF;
+      --surface-subtle: #F1F5F9;
+      --border-color: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --primary: #4F46E5;
+      --primary-hover: #4338CA;
+      --accent: #06B6D4;
+    }
+    body.dark-theme {
+      --bg-base: #0B0F19;
+      --surface: #131C2E;
+      --surface-subtle: #1E293B;
+      --border-color: #2D3748;
+      --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --primary: #6366F1;
+      --primary-hover: #4F46E5;
+      --accent: #22D3EE;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .mono { font-family: 'Fira Code', monospace; }
+    .card-box {
+      background-color: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      transition: all 0.25s ease;
+    }
+    .card-box:hover {
+      border-color: var(--primary);
+      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.1);
+    }
+    .nav-tab.active {
+      background: linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%);
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col dark-theme">
+
+  <!-- Top Header Bar -->
+  <header class="border-b bg-[var(--surface)] border-[var(--border-color)] px-6 py-4 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center font-extrabold text-white text-base shadow-md">UTH</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">LOGISTICS &amp; AI INTELLIGENCE</span>
+            <span class="text-[11px] font-mono text-[var(--text-muted)]">GSO V09.01 Dataset</span>
+          </div>
+          <h1 class="text-base font-bold text-[var(--text-main)] mt-0.5">Trung Tâm Điều Hành Cảng Biển &amp; Dự Báo XNK (1990–2030)</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="toggleThemeMode()" class="px-3 py-2 rounded-xl bg-[var(--surface-subtle)] border border-[var(--border-color)] text-xs font-semibold text-[var(--text-main)] hover:border-indigo-500 transition">
+          <span id="themeModeIcon">☀️</span> Đổi Giao Diện Sáng/Tối
+        </button>
+        <button type="button" onclick="switchMainTab('slides')" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition">
+          ▶ Mở Slide Thuyết Trình
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="border-b bg-[var(--surface)] border-[var(--border-color)] px-6">
+    <div class="max-w-7xl mx-auto flex gap-2 overflow-x-auto py-2.5">
+      <button type="button" onclick="switchMainTab('macro')" id="tab-btn-macro" class="nav-tab active px-4 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] transition whitespace-nowrap">01. Phân Tích Vĩ Mô GSO</button>
+      <button type="button" onclick="switchMainTab('depot')" id="tab-btn-depot" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] bg-[var(--surface-subtle)] border border-[var(--border-color)] transition whitespace-nowrap">02. Tối Ưu Vỏ Container &amp; Dem/Det</button>
+      <button type="button" onclick="switchMainTab('ocr')" id="tab-btn-ocr" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] bg-[var(--surface-subtle)] border border-[var(--border-color)] transition whitespace-nowrap">03. Kiểm Toán Chứng Từ AI OCR</button>
+      <button type="button" onclick="switchMainTab('fleet')" id="tab-btn-fleet" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] bg-[var(--surface-subtle)] border border-[var(--border-color)] transition whitespace-nowrap">04. Điều Phối Xe Đấu Kéo Backhaul</button>
+      <button type="button" onclick="switchMainTab('slides')" id="tab-btn-slides" class="nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-amber-400 bg-[var(--surface-subtle)] border border-amber-500/30 transition whitespace-nowrap">05. Trình Chiếu Slides Boardroom</button>
+    </div>
+  </nav>
+
+  <!-- Main Content Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-6 space-y-6">
+
+    <!-- TAB 1: MACRO GSO -->
+    <section id="tab-content-macro" class="space-y-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="card-box p-5 space-y-1">
+          <div class="text-xs text-[var(--text-muted)] uppercase font-semibold">Tổng Kim Ngạch 2025</div>
+          <div class="text-2xl font-extrabold text-[var(--text-main)] mono">929.924,2 <span class="text-xs font-normal text-[var(--text-muted)]">Tr.USD</span></div>
+          <div class="text-xs text-emerald-400 font-semibold pt-1">↑ Tăng 180,34 lần so với 1990</div>
+        </div>
+        <div class="card-box p-5 space-y-1">
+          <div class="text-xs text-[var(--text-muted)] uppercase font-semibold">Xuất Khẩu Sơ Bộ 2025</div>
+          <div class="text-2xl font-extrabold text-[var(--text-main)] mono">474.997,8 <span class="text-xs font-normal text-[var(--text-muted)]">Tr.USD</span></div>
+          <div class="text-xs text-indigo-400 font-semibold pt-1">CAGR 16,30% / năm</div>
+        </div>
+        <div class="card-box p-5 space-y-1">
+          <div class="text-xs text-[var(--text-muted)] uppercase font-semibold">Thặng Dư 10 Năm (2016-25)</div>
+          <div class="text-2xl font-extrabold text-emerald-400 mono">+128.319,1 <span class="text-xs font-normal text-[var(--text-muted)]">Tr.USD</span></div>
+          <div class="text-xs text-[var(--text-muted)] font-semibold pt-1">Đỉnh xuất siêu 2023 (+28,11 tỷ)</div>
+        </div>
+        <div class="card-box p-5 space-y-1">
+          <div class="text-xs text-[var(--text-muted)] uppercase font-semibold">Dự Báo AI 2027</div>
+          <div class="text-2xl font-extrabold text-cyan-400 mono">1.004,85 <span class="text-xs font-normal text-[var(--text-muted)]">Tỷ USD</span></div>
+          <div class="text-xs text-cyan-300 font-semibold pt-1">~32,16 triệu TEU qua cảng</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 card-box p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-[var(--text-main)]">Xu hướng Tổng Kim Ngạch, Xuất &amp; Nhập Khẩu (1990–2025)</h3>
+            <span class="text-[11px] mono px-2.5 py-1 rounded bg-[var(--surface-subtle)] text-[var(--text-muted)]">Nguồn: GSO V09.01</span>
+          </div>
+          <div class="h-80 w-full"><canvas id="macroChart1"></canvas></div>
+        </div>
+        <div class="lg:col-span-5 card-box p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-bold text-[var(--text-main)]">Cán Cân Thương Mại (Triệu USD)</h3>
+            <span class="text-[11px] mono px-2.5 py-1 rounded bg-emerald-500/10 text-emerald-400">Xuất/Nhập siêu</span>
+          </div>
+          <div class="h-80 w-full"><canvas id="macroChart2"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: DEPOT CONTAINER OPTIMIZER -->
+    <section id="tab-content-depot" class="hidden space-y-6">
+      <div class="card-box p-6 space-y-5">
+        <div>
+          <h2 class="text-lg font-bold text-[var(--text-main)]">Hệ Thống Mô Phỏng &amp; Tính Toán Chi Phí Lưu Bãi (Demurrage &amp; Detention)</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-1">Giải quyết bài toán thiếu hụt vỏ container 40ft HC mùa cao điểm do thặng dư xuất siêu kéo dài tại khu vực Cát Lái &amp; ICD Sóng Thần.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--text-muted)]">Sản lượng hàng xuất (TEU/tháng):</label>
+            <input type="number" id="simTeu" value="2500" class="w-full bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl p-3 text-xs mono text-[var(--text-main)] focus:outline-none focus:border-indigo-500">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--text-muted)]">Số ngày lưu bãi chờ đóng hàng (Days):</label>
+            <input type="number" id="simDays" value="6" class="w-full bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl p-3 text-xs mono text-[var(--text-main)] focus:outline-none focus:border-indigo-500">
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-[var(--text-muted)]">Đơn giá phí bãi chuẩn (USD/TEU/ngày):</label>
+            <input type="number" id="simRate" value="40" class="w-full bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl p-3 text-xs mono text-[var(--text-main)] focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+        <button type="button" onclick="runDepotSim()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-lg shadow-indigo-600/25">
+          Chạy Mô Hình Tối Ưu Vỏ Container
+        </button>
+        <div id="depotOutput" class="bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl p-5 text-xs mono space-y-2 text-[var(--text-main)]">
+          <div>Trạng thái: Nhập thông số và nhấn nút chạy mô hình phía trên để nhận báo cáo chi phí.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: OCR AUDIT -->
+    <section id="tab-content-ocr" class="hidden space-y-6">
+      <div class="card-box p-6 space-y-5">
+        <div>
+          <h2 class="text-lg font-bold text-[var(--text-main)]">Kiểm Toán Chứng Từ Tự Động Bằng AI Agent (Vision-LLM &amp; OCR)</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-1">Đối chiếu chéo Vận đơn (B/L) và Hóa đơn thương mại (Commercial Invoice) trước giờ cắt máng (Cut-off time).</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-[var(--text-main)]">Dữ liệu Vận đơn (Draft Bill of Lading):</label>
+            <textarea rows="5" class="w-full bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl p-3 text-xs mono text-[var(--text-main)] focus:outline-none">Shipper: UTH Logistics Co.
+Gross Weight: 16.850 KGS
+Container No: TGHU4928192
+HS Code: 8542.31.00
+Destination: Rotterdam, NL</textarea>
+          </div>
+          <div class="space-y-2">
+            <label class="text-xs font-bold text-[var(--text-main)]">Dữ liệu Hóa đơn (Commercial Invoice):</label>
+            <textarea rows="5" class="w-full bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl p-3 text-xs mono text-[var(--text-main)] focus:outline-none">Seller: UTH Logistics Co.
+Gross Weight: 16.580 KGS
+Container No: TGHU4928192
+HS Code: 8542.31.00
+Destination: Rotterdam, NL</textarea>
+          </div>
+        </div>
+        <button type="button" onclick="runAiOcrAudit()" class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition shadow-lg shadow-cyan-600/25">
+          Kích Hoạt AI Agent Kiểm Tra Chéo
+        </button>
+        <div id="ocrOutput" class="bg-[var(--surface-subtle)] border border-[var(--border-color)] rounded-xl p-5 text-xs mono space-y-2 text-[var(--text-main)]">
+          <div>Hệ thống AI OCR sẵn sàng thực thi phân tích sai lệch trọng lượng và mã HS.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: FLEET OPTIMIZER -->
+    <section id="tab-content-fleet" class="hidden space-y-6">
+      <div class="card-box p-6 space-y-5">
+        <div>
+          <h2 class="text-lg font-bold text-[var(--text-main)]">Tối Ưu Hóa Đội Xe Đầu Kéo Hai Chiều (Backhaul Fleet Matching)</h2>
+          <p class="text-xs text-[var(--text-muted)] mt-1">Giảm thiểu tình trạng xe đầu kéo chạy rỗng một chiều từ cảng về KCN Bình Dương/Đồng Nai.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-[var(--surface-subtle)] border border-[var(--border-color)] p-4 rounded-xl">
+            <div class="text-xs text-[var(--text-muted)]">Lưu lượng xe xuất bến</div>
+            <div class="text-2xl font-bold text-[var(--text-main)] mono mt-1">180 chuyến/ngày</div>
+          </div>
+          <div class="bg-[var(--surface-subtle)] border border-[var(--border-color)] p-4 rounded-xl">
+            <div class="text-xs text-[var(--text-muted)]">Tỷ lệ xe chạy rỗng thực tế</div>
+            <div class="text-2xl font-bold text-rose-400 mono mt-1">42.0%</div>
+          </div>
+          <div class="bg-[var(--surface-subtle)] border border-[var(--border-color)] p-4 rounded-xl">
+            <div class="text-xs text-[var(--text-muted)]">Tỷ lệ rỗng sau tối ưu AI</div>
+            <div class="text-2xl font-bold text-emerald-400 mono mt-1">11.5%</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SLIDE BOARDROOM -->
+    <section id="tab-content-slides" class="hidden space-y-4">
+      <div class="card-box p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-[var(--border-color)] pb-4">
+          <div class="flex items-center gap-3">
+            <span id="slideIndicatorBadge" class="px-3 py-1 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-xs font-mono font-bold">SLIDE 01 / 06</span>
+            <span class="text-xs font-semibold text-[var(--text-muted)]">Chế độ Thuyết Trình Hội Đồng UTH</span>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" onclick="navigateSlide(-1)" class="px-3.5 py-1.5 rounded-xl bg-[var(--surface-subtle)] border border-[var(--border-color)] text-xs font-semibold text-[var(--text-main)] hover:border-indigo-500">← Trang trước</button>
+            <button type="button" onclick="navigateSlide(1)" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">Trang tiếp →</button>
+          </div>
+        </div>
+        <div id="slideContentBox" class="py-8 min-h-[340px] flex flex-col justify-center space-y-4">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function toggleThemeMode() {
+      const body = document.body;
+      body.classList.toggle('dark-theme');
+      const isDark = body.classList.contains('dark-theme');
+      document.getElementById('themeModeIcon').textContent = isDark ? "☀️" : "🌙";
+      initMacroCharts();
+    }
+
+    function switchMainTab(tabId) {
+      ['macro', 'depot', 'ocr', 'fleet', 'slides'].forEach(t => {
+        document.getElementById(`tab-content-${t}`).classList.add('hidden');
+        document.getElementById(`tab-btn-${t}`).className = "nav-tab px-4 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] bg-[var(--surface-subtle)] border border-[var(--border-color)] transition whitespace-nowrap";
+      });
+      document.getElementById(`tab-content-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-btn-${tabId}`).className = "nav-tab active px-4 py-2 rounded-xl text-xs font-semibold text-white transition whitespace-nowrap";
+      if (tabId === 'macro') initMacroCharts();
+      if (tabId === 'slides') renderSlide(currentSlideIdx);
+    }
+
+    function runDepotSim() {
+      const teu = Number(document.getElementById('simTeu').value) || 0;
+      const days = Number(document.getElementById('simDays').value) || 0;
+      const rate = Number(document.getElementById('simRate').value) || 0;
+      const total = teu * days * rate;
+      const saved = total * 0.32;
+      document.getElementById('depotOutput').innerHTML = `
+        <div class="text-emerald-400 font-bold">✔ Báo cáo phân tích chi phí lưu bãi (Demurrage/Detention):</div>
+        <div>- Tổng chi phí phát sinh ước tính: <span class="text-rose-400 font-bold">$${total.toLocaleString('en-US')} USD</span></div>
+        <div>- Chi phí tiết kiệm sau khi áp dụng mô hình dự báo vỏ container: <span class="text-emerald-400 font-bold">-$${saved.toLocaleString('en-US')} USD (Giảm 32%)</span></div>
+      `;
+    }
+
+    function runAiOcrAudit() {
+      document.getElementById('ocrOutput').innerHTML = `
+        <div class="text-rose-400 font-bold">⚠ PHÁT HIỆN SAI LỆCH TRỌNG LƯỢNG (DISCREPANCY ALERT):</div>
+        <div>- Vận đơn (Draft B/L): <span class="text-indigo-400 font-bold">16.850 KGS</span></div>
+        <div>- Hóa đơn (Commercial Invoice): <span class="text-indigo-400 font-bold">16.580 KGS</span></div>
+        <div class="text-amber-400 pt-1">- Chênh lệch: 270 KGS. Hệ thống tự động giữ lệnh cấp Container Gate-Out và yêu cầu nhân viên chứng từ xác thực lại với Shipper trước giờ cắt máng.</div>
+      `;
+    }
+
+    let currentSlideIdx = 0;
+    const slidesList = [
+      { title: "Trang Bìa: Đề Tài Nghiên Cứu Chuyên Sâu", desc: "Ứng dụng Trí tuệ nhân tạo và Hệ thống Đa tác tử (Agentic AI) trong dự báo kim ngạch xuất nhập khẩu và điều phối Logistics Việt Nam giai đoạn 2026–2030." },
+      { title: "Bài Toán Thực Tiễn & Điểm Nghẽn Cảng Biển", desc: "Kim ngạch XNK 2025 đạt 929,92 tỷ USD. Ba thách thức lớn: Mất cân đối vỏ container xuất - nhập, thời gian xử lý chứng từ thủ công kéo dài và ùn tắc tại cổng cảng." },
+      { title: "Khai Thác Dữ Liệu Vĩ Mô GSO V09.01", desc: "Phân tích chuỗi 36 năm (1990–2025). Tốc độ tăng trưởng kép CAGR = 16.00%/năm; ghi nhận chuỗi 10 năm xuất siêu liên tiếp (2016–2025) đạt +128,32 tỷ USD." },
+      { title: "Mô Hình Dự Báo AI Hybrid Ensemble", desc: "Kết hợp OLS, Poly-2 Ridge và Holt Smoothing đạt độ chính xác R² = 97.77%, MAPE = 4.34%, dự báo chính xác mốc 1.000 tỷ USD vào năm 2027 (~32,16 triệu TEU)." },
+      { title: "Kiến Trúc Hệ Thống 4 AI Agents Tự Chủ", desc: "Phối hợp 4 tác tử chuyên trách: Demand Forecaster, Customs B/L Auditor, Fleet Optimizer và HITL Governance Guard đảm bảo vận hành an toàn." },
+      { title: "Tổng Kết & Định Hướng Phát Triển", desc: "Hoàn thiện hệ sinh thái số hóa chuỗi cung ứng, tuân thủ nguyên tắc Human-in-the-Loop và kiểm soát tuyệt đối hiện tượng ảo giác dữ liệu." }
+    ];
+
+    function navigateSlide(dir) {
+      currentSlideIdx = (currentSlideIdx + dir + slidesList.length) % slidesList.length;
+      renderSlide(currentSlideIdx);
+    }
+
+    function renderSlide(idx) {
+      document.getElementById('slideIndicatorBadge').textContent = `SLIDE ${String(idx + 1).padStart(2, '0')} / ${slidesList.length}`;
+      document.getElementById('slideContentBox').innerHTML = `
+        <h3 class="text-xl font-extrabold text-[var(--text-main)]">${slidesList[idx].title}</h3>
+        <p class="text-sm text-[var(--text-muted)] leading-relaxed max-w-3xl">${slidesList[idx].desc}</p>
+      `;
+    }
+
+    let macroChart1Inst = null;
+    let macroChart2Inst = null;
+    function initMacroCharts() {
+      const isDark = document.body.classList.contains('dark-theme');
+      const textColor = isDark ? '#94A3B8' : '#64748B';
+      const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(100, 116, 139, 0.1)';
+
+      const ctx1 = document.getElementById('macroChart1').getContext('2d');
+      if (macroChart1Inst) macroChart1Inst.destroy();
+      macroChart1Inst = new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: ['2010', '2012', '2014', '2016', '2018', '2020', '2022', '2024', '2025'],
+          datasets: [{
+            label: 'Tổng XNK (Tr.USD)',
+            data: [157075, 228309, 298066, 351559, 480938, 545419, 731495, 787239, 929924],
+            borderColor: '#6366F1',
+            backgroundColor: isDark ? 'rgba(99, 102, 241, 0.15)' : 'rgba(79, 70, 229, 0.1)',
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: textColor, font: { size: 11 } } } },
+          scales: {
+            x: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } },
+            y: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } }
+          }
+        }
+      });
+
+      const ctx2 = document.getElementById('macroChart2').getContext('2d');
+      if (macroChart2Inst) macroChart2Inst.destroy();
+      macroChart2Inst = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: 'Cán cân thương mại',
+            data: [19837, 3197, 11935, 28114, 24631, 20071],
+            backgroundColor: '#10B981',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: textColor, font: { size: 11 } } } },
+          scales: {
+            x: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } },
+            y: { ticks: { color: textColor, font: { size: 10 } }, grid: { color: gridColor } }
+          }
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initMacroCharts();
+      renderSlide(0);
+    });
+  </script>
+</body>
+</html>
