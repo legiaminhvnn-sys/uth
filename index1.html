@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vietnam Logistics Command Center &amp; AI Intelligence | UTH Project</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0B1120;
+      color: #E2E8F0;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .panel-box {
+      background: #111827;
+      border: 1px solid #1F2937;
+      border-radius: 12px;
+    }
+    .panel-box:hover {
+      border-color: #3B82F6;
+    }
+    .tab-active {
+      background: #2563EB !important;
+      color: #FFFFFF !important;
+      border-color: #3B82F6 !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header Điều Hành -->
+  <header class="bg-slate-900 border-b border-slate-800 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white text-lg">UTH</div>
+        <div>
+          <div class="text-xs text-blue-400 font-semibold tracking-wider uppercase">ĐH GTVT TP.HCM • Ngành Logistics &amp; Quản lý Chuỗi cung ứng</div>
+          <h1 class="text-lg font-bold text-white">Hệ Thống Chỉ Huy &amp; Điều Độ Cảng Thông Minh (GSO V09.01 Data)</h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="px-3 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs mono">● Trạng thái: Sẵn sàng kết nối API Cảng</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Thao Tác Nghiệp Vụ -->
+  <nav class="bg-slate-900/60 border-b border-slate-800 px-6">
+    <div class="max-w-7xl mx-auto flex gap-2 overflow-x-auto py-2">
+      <button type="button" onclick="switchView('overview')" id="btn-overview" class="nav-btn tab-active px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-transparent transition">01. Tổng Quan Vĩ Mô &amp; GSO</button>
+      <button type="button" onclick="switchView('depot')" id="btn-depot" class="nav-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-slate-800 bg-slate-800/50 transition">02. Quản Lý Vỏ Container &amp; Dem/Det</button>
+      <button type="button" onclick="switchView('customs')" id="btn-customs" class="nav-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-slate-800 bg-slate-800/50 transition">03. Kiểm Toán Chứng Từ e-B/L (AI OCR)</button>
+      <button type="button" onclick="switchView('fleet')" id="btn-fleet" class="nav-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-slate-800 bg-slate-800/50 transition">04. Điều Phối Xe Đấu Kéo &amp; Backhaul</button>
+      <button type="button" onclick="switchView('slides')" id="btn-slides" class="nav-btn px-4 py-2 rounded-lg text-xs font-semibold text-amber-400 border border-amber-500/30 bg-amber-500/10 transition">05. Slide Thuyết Trình Bảo Vệ</button>
+    </div>
+  </nav>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-6 space-y-6">
+
+    <!-- VIEW 1: OVERVIEW GSO -->
+    <section id="view-overview" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="panel-box p-4">
+          <div class="text-xs text-slate-400">Tổng Kim Ngạch 2025 (GSO)</div>
+          <div class="text-2xl font-bold text-white mono mt-1">929.924,2 <span class="text-xs font-normal text-slate-400">Tr.USD</span></div>
+          <div class="text-xs text-emerald-400 mt-1">Tăng gấp 180,34 lần từ 1990</div>
+        </div>
+        <div class="panel-box p-4">
+          <div class="text-xs text-slate-400">Xuất Siêu Lũy Kế 10 Năm</div>
+          <div class="text-2xl font-bold text-emerald-400 mono mt-1">+128.319,1 <span class="text-xs font-normal text-slate-400">Tr.USD</span></div>
+          <div class="text-xs text-slate-400 mt-1">Giai đoạn 2016–2025</div>
+        </div>
+        <div class="panel-box p-4">
+          <div class="text-xs text-slate-400">Dự Báo Cột Mốc 2027</div>
+          <div class="text-2xl font-bold text-blue-400 mono mt-1">1.004.849,4 <span class="text-xs font-normal text-slate-400">Tr.USD</span></div>
+          <div class="text-xs text-blue-300 mt-1">Mô hình AI Hybrid Ensemble</div>
+        </div>
+        <div class="panel-box p-4">
+          <div class="text-xs text-slate-400">Sản Lượng Cảng Dự Kiến</div>
+          <div class="text-2xl font-bold text-amber-400 mono mt-1">32,16 <span class="text-xs font-normal text-slate-400">Triệu TEU</span></div>
+          <div class="text-xs text-slate-400 mt-1">Hệ số quy đổi tiêu chuẩn</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="panel-box p-5 space-y-3">
+          <h3 class="text-sm font-bold text-white">Biểu Đồ Kim Ngạch Xuất Nhập Khẩu Thực Tế (1990–2025)</h3>
+          <div class="h-72 w-full"><canvas id="chartOverview"></canvas></div>
+        </div>
+        <div class="panel-box p-5 space-y-3">
+          <h3 class="text-sm font-bold text-white">Cán Cân Thương Mại (Nhập Siêu sang Xuất Siêu)</h3>
+          <div class="h-72 w-full"><canvas id="chartBalance"></canvas></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: DEPOT & CONTAINER -->
+    <section id="view-depot" class="hidden space-y-6">
+      <div class="panel-box p-6 space-y-4">
+        <h2 class="text-base font-bold text-white">Bộ Công Cụ Tính Toán Thiếu Hụt Vỏ Container &amp; Phí Lưu Bãi (Demurrage / Detention)</h2>
+        <p class="text-xs text-slate-400">Giải quyết bài toán thặng dư xuất siêu kéo dài dẫn đến mất cân đối vỏ container 40ft HC tại khu vực ICD Sóng Thần &amp; Cát Lái.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="space-y-1">
+            <label class="text-xs text-slate-300">Sản lượng hàng xuất (TEU/tháng):</label>
+            <input type="number" id="inpTeu" value="1500" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs mono text-white" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs text-slate-300">Số ngày lưu bãi trung bình (Days):</label>
+            <input type="number" id="inpDays" value="7" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs mono text-white" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs text-slate-300">Đơn giá lưu bãi (USD/TEU/ngày):</label>
+            <input type="number" id="inpRate" value="35" class="w-full bg-slate-900 border border-slate-700 rounded p-2 text-xs mono text-white" />
+          </div>
+        </div>
+        
+        <button type="button" onclick="calcDemurrage()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded text-xs font-bold text-white transition">Tính Toán Chi Phí &amp; Gợi Ý AI</button>
+        
+        <div id="depotResult" class="bg-slate-900 border border-slate-800 rounded p-4 text-xs space-y-2 mono text-slate-300">
+          <div>Nhấn "Tính toán" để chạy mô hình ước lượng chi phí lưu bãi và đề xuất luân chuyển vỏ rỗng tự động.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: CUSTOMS OCR AUDIT -->
+    <section id="view-customs" class="hidden space-y-6">
+      <div class="panel-box p-6 space-y-4">
+        <h2 class="text-base font-bold text-white">Mô Phỏng AI OCR Đối Chéo Chứng Từ Vận Đơn (e-B/L vs Invoice)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-slate-300">Dữ liệu Vận đơn (Draft Bill of Lading):</label>
+            <textarea rows="4" class="w-full bg-slate-900 border border-slate-700 rounded p-3 text-xs mono text-white">Shipper: UTH High-Tech Co.
+Gross Weight: 14.520 KGS
+Container No: TGHU9823714
+HS Code: 8542.31.00</textarea>
+          </div>
+          <div class="space-y-2">
+            <label class="text-xs font-semibold text-slate-300">Dữ liệu Hóa đơn thương mại (Commercial Invoice):</label>
+            <textarea rows="4" class="w-full bg-slate-900 border border-slate-700 rounded p-3 text-xs mono text-white">Seller: UTH High-Tech Co.
+Gross Weight: 14.250 KGS
+Container No: TGHU9823714
+HS Code: 8542.31.00</textarea>
+          </div>
+        </div>
+        <button type="button" onclick="runOcrAudit()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 rounded text-xs font-bold text-white transition">Chạy AI Agent Kiểm Tra Sai Lệch</button>
+        <div id="ocrResult" class="bg-slate-900 border border-slate-800 rounded p-4 text-xs space-y-1 mono text-slate-300">
+          <div>Hệ thống sẵn sàng quét chéo. Nhấn nút phía trên để thực thi.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: FLEET OPTIMIZER -->
+    <section id="view-fleet" class="hidden space-y-6">
+      <div class="panel-box p-6 space-y-4">
+        <h2 class="text-base font-bold text-white">Tối Ưu Hóa Ghép Chuyến Xe Đầu Kéo Hai Chiều (Backhaul Fleet Optimizer)</h2>
+        <p class="text-xs text-slate-400">Giảm tỷ lệ xe chạy rỗng từ 40% xuống 11% giữa các KCN Bình Dương và Cụm cảng Cát Lái / Cái Mép.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-slate-900 p-4 rounded border border-slate-800">
+            <div class="text-xs text-slate-400">Lượt xe xuất kho (KCN → Cảng)</div>
+            <div class="text-xl font-bold text-white mono mt-1">120 chuyến/ngày</div>
+          </div>
+          <div class="bg-slate-900 p-4 rounded border border-slate-800">
+            <div class="text-xs text-slate-400">Tỷ lệ xe chạy rỗng chiều về</div>
+            <div class="text-xl font-bold text-rose-400 mono mt-1">38.5% (Thực tế)</div>
+          </div>
+          <div class="bg-slate-900 p-4 rounded border border-slate-800">
+            <div class="text-xs text-slate-400">Tiết kiệm nhờ AI Backhaul Matching</div>
+            <div class="text-xl font-bold text-emerald-400 mono mt-1">-28.4% chi phí</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: SLIDES BẢO VỆ -->
+    <section id="view-slides" class="hidden space-y-4">
+      <div class="panel-box p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <span id="slideIndicator" class="text-xs font-bold uppercase text-amber-400 mono">Slide 01 / 06</span>
+          <div class="flex gap-2">
+            <button type="button" onclick="changeSlide(-1)" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded text-xs text-white">← Trước</button>
+            <button type="button" onclick="changeSlide(1)" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-xs text-white">Tiếp theo →</button>
+          </div>
+        </div>
+        <div id="slideContainer" class="py-6 min-h-[300px] flex flex-col justify-center">
+          <!-- Nội dung slide sẽ được render bằng JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function switchView(viewId) {
+      ['overview', 'depot', 'customs', 'fleet', 'slides'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        document.getElementById(`btn-${v}`).className = "nav-btn px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-slate-800 bg-slate-800/50 transition";
+      });
+      document.getElementById(`view-${viewId}`).classList.remove('hidden');
+      document.getElementById(`btn-${viewId}`).className = "nav-btn tab-active px-4 py-2 rounded-lg text-xs font-semibold text-slate-300 border border-transparent transition";
+      if (viewId === 'overview') initCharts();
+    }
+
+    function calcDemurrage() {
+      const teu = Number(document.getElementById('inpTeu').value) || 0;
+      const days = Number(document.getElementById('inpDays').value) || 0;
+      const rate = Number(document.getElementById('inpRate').value) || 0;
+      const totalCost = teu * days * rate;
+      const savedCost = totalCost * 0.35;
+      document.getElementById('depotResult').innerHTML = `
+        <div class="text-emerald-400 font-bold">✔ Kết quả phân tích chi phí lưu bãi dự kiến:</div>
+        <div>- Tổng chi phí phát sinh nếu không tối ưu: <span class="text-rose-400 font-bold">$${totalCost.toLocaleString('en-US')} USD</span></div>
+        <div>- Chi phí tiết kiệm được sau khi áp dụng AI Agent dự báo vỏ rỗng: <span class="text-emerald-400 font-bold">-$${savedCost.toLocaleString('en-US')} USD (Tiết kiệm 35%)</span></div>
+      `;
+    }
+
+    function runOcrAudit() {
+      document.getElementById('ocrResult').innerHTML = `
+        <div class="text-rose-400 font-bold">⚠ PHÁT HIỆN SAI LỆCH CHỨNG TỪ (DISCREPANCY FOUND):</div>
+        <div>- Mục Gross Weight: Vận đơn (14.520 KGS) KHỚP VỚI Hóa đơn (14.250 KGS) - <span class="text-rose-400">Sai lệch 270 KGS (Lỗi đánh máy)</span>.</div>
+        <div>- Khuyến nghị: Dừng truyền dữ liệu sang hệ thống hải quan VNACCS, tự động gửi cảnh báo email chỉnh sửa bản Draft B/L trước giờ Closing Time.</div>
+      `;
+    }
+
+    let currentSlide = 0;
+    const slidesData = [
+      { title: "Trang Bìa: Đề Tài Nghiên Cứu", content: "Ứng dụng Trí tuệ nhân tạo và Hệ thống Đa tác tử trong dự báo XNK và điều phối Logistics Việt Nam (1990–2030). Thực hiện bởi Nhóm sinh viên ngành Logistics UTH." },
+      { title: "Bài Toán & Điểm Nghẽn Thực Tiễn", content: "Kim ngạch XNK 2025 đạt 929,92 tỷ USD, gây áp lực quá tải hạ tầng cảng biển. Ba điểm nghẽn chính: Mất cân đối vỏ container, trễ chứng từ B/L thủ công và xe chạy rỗng chiều về." },
+      { title: "Phân Tích Dữ Liệu Vĩ Mô GSO V09.01", content: "Khai thác 36 năm dữ liệu (1990–2025). Tăng trưởng kép CAGR = 16.00%/năm. Ghi nhận chuỗi 10 năm xuất siêu liên tiếp (2016–2025) đạt lũy kế +128,32 tỷ USD." },
+      { title: "Mô Hình Dự Báo AI Hybrid Ensemble", content: "Kết hợp OLS, Poly-2 Ridge và Holt Smoothing đạt độ chính xác R² = 97.77%, MAPE = 4.34%, chính thức vượt mốc 1.000 tỷ USD vào năm 2027 (~32,16 triệu TEU)." },
+      { title: "Hệ Thống 4 AI Agents Tự Chủ", content: "Phối hợp 4 tác tử: Demand Forecaster (Dự báo), Customs Auditor (Kiểm toán B/L), Fleet Optimizer (Điều độ xe/sà lan) và HITL Governance (Phê duyệt an toàn)." },
+      { title: "Tổng Kết & Cam Kết Bảo Vệ", content: "Hoàn thiện hệ sinh thái số hóa chuỗi cung ứng, tuân thủ nguyên tắc Human-in-the-Loop và kiểm soát ảo giác dữ liệu tuyệt đối." }
+    ];
+
+    function changeSlide(direction) {
+      currentSlide = (currentSlide + direction + slidesData.length) % slidesData.length;
+      document.getElementById('slideIndicator').textContent = `Slide ${String(currentSlide + 1).padStart(2, '0')} / ${slidesData.length}`;
+      document.getElementById('slideContainer').innerHTML = `
+        <h3 class="text-xl font-bold text-white mb-3">${slidesData[currentSlide].title}</h3>
+        <p class="text-sm text-slate-300 leading-relaxed max-w-2xl">${slidesData[currentSlide].content}</p>
+      `;
+    }
+
+    let chartsInitialized = false;
+    function initCharts() {
+      if (chartsInitialized) return;
+      chartsInitialized = true;
+      
+      const ctx1 = document.getElementById('chartOverview').getContext('2d');
+      new Chart(ctx1, {
+        type: 'line',
+        data: {
+          labels: ['2010', '2015', '2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: 'Tổng XNK (Tr.USD)',
+            data: [157075, 327792, 545419, 669136, 731495, 681327, 787239, 929924],
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94A3B8', font: { size: 10 } } } }, scales: { x: { ticks: { color: '#94A3B8', font: { size: 9 } } }, y: { ticks: { color: '#94A3B8', font: { size: 9 } } } } }
+      });
+
+      const ctx2 = document.getElementById('chartBalance').getContext('2d');
+      new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+          datasets: [{
+            label: 'Cán cân thương mại (Tr.USD)',
+            data: [19837, 3197, 11935, 28114, 24631, 20071],
+            backgroundColor: '#10B981'
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#94A3B8', font: { size: 10 } } } }, scales: { x: { ticks: { color: '#94A3B8', font: { size: 9 } } }, y: { ticks: { color: '#94A3B8', font: { size: 9 } } } } }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      changeSlide(0);
+      initCharts();
+    });
+  </script>
+</body>
+</html>
