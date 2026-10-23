@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaggle E-Commerce Shipping &amp; AI Logistics Suite | Báo Cáo &amp; Trình Chiếu UTH</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-primary: #060D1A;
+      --bg-secondary: #0D1726;
+      --bg-elevated: rgba(15, 25, 42, 0.88);
+      --text-primary: #F8FAFC;
+      --text-secondary: #CBD5E1;
+      --text-muted: #94A3B8;
+      --border-color: rgba(16, 185, 129, 0.22);
+      --slide-bg: linear-gradient(135deg, #071324 0%, #0F1E36 55%, #062825 100%);
+    }
+
+    body.theme-light {
+      --bg-primary: #F1F5F9;
+      --bg-secondary: #FFFFFF;
+      --bg-elevated: rgba(255, 255, 255, 0.97);
+      --text-primary: #0F172A;
+      --text-secondary: #1E293B;
+      --text-muted: #475569;
+      --border-color: rgba(16, 185, 129, 0.35);
+      --slide-bg: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 60%, #E0E7FF 100%);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    .glass-card {
+      background: var(--bg-elevated);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    body.theme-light .glass-card {
+      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+    }
+
+    .glass-card-hover:hover {
+      border-color: rgba(16, 185, 129, 0.6);
+      transform: translateY(-2px);
+    }
+
+    /* High-Contrast Projector Light Mode Overrides */
+    body.theme-light .text-white { color: #0F172A !important; }
+    body.theme-light .text-slate-100 { color: #0F172A !important; }
+    body.theme-light .text-slate-200 { color: #1E293B !important; }
+    body.theme-light .text-slate-300 { color: #334155 !important; }
+    body.theme-light .text-slate-400 { color: #475569 !important; }
+    body.theme-light .text-emerald-300 { color: #047857 !important; }
+    body.theme-light .text-emerald-400 { color: #059669 !important; }
+    body.theme-light .text-indigo-300 { color: #4338CA !important; }
+    body.theme-light .text-indigo-400 { color: #4F46E5 !important; }
+    body.theme-light .text-cyan-300 { color: #0E7490 !important; }
+    body.theme-light .text-cyan-400 { color: #0891B2 !important; }
+    body.theme-light .text-amber-300 { color: #B45309 !important; }
+    body.theme-light .text-amber-400 { color: #D97706 !important; }
+    body.theme-light .text-rose-300 { color: #BE123C !important; }
+    body.theme-light .text-rose-400 { color: #E11D48 !important; }
+    body.theme-light .text-purple-300 { color: #6D28D9 !important; }
+
+    body.theme-light .bg-slate-950,
+    body.theme-light .bg-slate-950\/90,
+    body.theme-light .bg-slate-950\/80,
+    body.theme-light .bg-slate-950\/70 {
+      background-color: #FFFFFF !important;
+    }
+    body.theme-light .bg-slate-900,
+    body.theme-light .bg-slate-900\/90,
+    body.theme-light .bg-slate-900\/80,
+    body.theme-light .bg-slate-900\/60 {
+      background-color: #F8FAFC !important;
+    }
+    body.theme-light .bg-slate-800,
+    body.theme-light .bg-slate-800\/90 {
+      background-color: #E2E8F0 !important;
+    }
+    body.theme-light .border-slate-800,
+    body.theme-light .border-slate-800\/80,
+    body.theme-light .border-slate-800\/60,
+    body.theme-light .border-slate-700,
+    body.theme-light .border-slate-700\/80 {
+      border-color: #CBD5E1 !important;
+    }
+
+    .tab-btn-active {
+      background: linear-gradient(135deg, #059669 0%, #4F46E5 100%) !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+      border-color: transparent !important;
+    }
+    body.theme-light .tab-btn-active span {
+      color: #FFFFFF !important;
+    }
+
+    .slide-stage {
+      background: var(--slide-bg);
+      border: 1px solid var(--border-color);
+      min-height: 520px;
+      transition: all 0.3s ease;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.2);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(16, 185, 129, 0.45);
+      border-radius: 9999px;
+    }
+    .pulse-dot {
+      animation: pulseRing 2s infinite;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- Toast Notification -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-slate-900/95 border border-emerald-400/50 text-slate-100 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 transition-all duration-300">
+    <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
+    <span id="toastMessage" class="text-sm font-medium">Đã thực hiện thao tác!</span>
+  </div>
+
+  <!-- Sticky Top Command Header -->
+  <header class="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between py-3 gap-3">
+        <!-- Brand & Project Title -->
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500 via-teal-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">ĐH GTVT TP.HCM (UTH)</span>
+              <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">Kaggle E-Commerce Shipping (N = 10.999)</span>
+              <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">Liên kết vĩ mô GSO V09.01</span>
+            </div>
+            <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white mt-0.5">
+              AI &amp; Hệ Thống Đa Tác Tử Trong Dự Báo Trễ Đơn Hàng &amp; Tối Ưu Hóa Kho Bãi Logistics
+            </h1>
+          </div>
+        </div>
+
+        <!-- Right Controls: Slide Deck + Theme Switcher + 10-Min Timer -->
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="launchSlideDeckBtn" type="button" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:opacity-95 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+            </svg>
+            <span id="launchSlideDeckText">Trình chiếu Slide (12 Trang)</span>
+          </button>
+
+          <button id="themeToggleBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-emerald-400 text-xs font-semibold text-slate-200 flex items-center gap-1.5 transition" title="Chuyển đổi giao diện Sáng (Máy chiếu) / Tối (Studio)">
+            <span id="themeIcon">☀️</span>
+            <span id="themeLabel">Theme Sáng (Máy chiếu)</span>
+          </button>
+
+          <div class="flex items-center gap-1.5 bg-slate-900/90 border border-slate-700/80 rounded-xl px-2.5 py-1">
+            <span id="timerStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></span>
+            <span id="headerTimerDisplay" class="font-mono text-xs sm:text-sm font-bold text-emerald-300">10:00</span>
+            <button id="headerTimerToggle" type="button" class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 font-semibold transition">
+              Bắt đầu
+            </button>
+            <button id="headerTimerReset" type="button" class="text-[11px] px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition">
+              Đặt lại
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Main Navigation Tabs -->
+      <nav class="flex items-center gap-1.5 overflow-x-auto py-2 custom-scrollbar border-t border-slate-800/60" aria-label="Điều hướng dự án">
+        <button type="button" data-tab="tab-infographic" class="nav-tab-btn tab-btn-active whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold border border-slate-700/60 flex items-center gap-2 transition">
+          <span>01. Tổng Quan &amp; Kiến Trúc AI</span>
+        </button>
+        <button type="button" data-tab="tab-kaggle-eda" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-300 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition">
+          <span>02. Khám Phá Dữ Liệu Kaggle (10.999 Đơn)</span>
+        </button>
+        <button type="button" data-tab="tab-ml-simulator" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-300 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition">
+          <span>03. Mô Hình Học Máy &amp; Mô Phỏng SLA</span>
+        </button>
+        <button type="button" data-tab="tab-agent-prompt" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-300 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition">
+          <span>04. Prompt CO-STAR &amp; 4 AI Agents</span>
+        </button>
+        <button type="button" data-tab="tab-ethics-pitch" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-300 hover:text-white bg-slate-900/60 border border-slate-800 flex items-center gap-2 transition">
+          <span>05. Đạo Đức AI &amp; Kịch Bản Bảo Vệ</span>
+        </button>
+        <button type="button" data-tab="tab-slide-deck" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-amber-300 hover:text-white bg-slate-900/60 border border-amber-500/40 flex items-center gap-2 transition">
+          <span>06. Trình Chiếu Slide Deck (12 Slides)</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+    <!-- ==========================================
+         TAB 1: EXECUTIVE INFOGRAPHIC & ARCHITECTURE
+         ========================================== -->
+    <section id="tab-infographic" class="tab-panel space-y-6">
+      <div class="relative rounded-2xl overflow-hidden glass-card p-6 sm:p-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-7 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-semibold">
+              <span>BÁO CÁO KHOA HỌC DỮ LIỆU KAGGLE &amp; TỰ ĐỘNG HÓA CHUỖI CUNG ỨNG</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white leading-tight">
+              Giải Bài Toán <span class="text-rose-400">59,67% Đơn Hàng Trễ Hạn</span> Bằng <span class="text-emerald-400">Mô Hình Học Máy &amp; Đa Tác Tử AI</span>
+            </h2>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              Nghiên cứu thực nghiệm trên bộ dữ liệu quốc tế <strong class="text-white">Kaggle E-Commerce Shipping Data (10.999 lô hàng, 12 biến đặc trưng)</strong> kết hợp bối cảnh vĩ mô <strong class="text-white">GSO V09.01 (929,92 tỷ USD xuất nhập khẩu năm 2025)</strong>. Dự án xây dựng thuật toán <strong class="text-emerald-300">XGBoost + Random Forest Ensemble</strong> dự báo sớm rủi ro trễ hạn tại các khối kho bãi (Block A–F) và điều phối vận tải Đường biển – Hàng không – Đường bộ.
+            </p>
+            <div class="flex flex-wrap gap-3 pt-1">
+              <button type="button" data-goto-tab="tab-slide-deck" class="goto-tab-trigger px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold text-xs sm:text-sm hover:opacity-95 transition shadow-lg shadow-amber-500/20">
+                ▶ Mở Chế Độ Trình Chiếu Slide (12 Trang)
+              </button>
+              <button type="button" data-goto-tab="tab-kaggle-eda" class="goto-tab-trigger px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20">
+                Khám phá 10.999 Đơn hàng Kaggle →
+              </button>
+              <button type="button" data-goto-tab="tab-ml-simulator" class="goto-tab-trigger px-4 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-indigo-300 border border-indigo-500/30 font-semibold text-xs sm:text-sm transition">
+                Chạy Mô phỏng Dự báo Trễ Hạn
+              </button>
+            </div>
+          </div>
+
+          <!-- Custom SVG Pipeline Diagram -->
+          <div class="lg:col-span-5 bg-slate-950/70 border border-slate-800 rounded-2xl p-4">
+            <div class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center justify-between">
+              <span>Kiến Trúc AI Dự Báo &amp; Điều Phối Giao Nhận</span>
+              <span class="font-mono text-[11px] text-indigo-400">Kaggle + GSO Pipeline</span>
+            </div>
+            <svg viewBox="0 0 420 250" class="w-full h-auto" role="img" aria-label="Sơ đồ kiến trúc AI Logistics Kaggle">
+              <defs>
+                <linearGradient id="gradEmerald" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#059669"/>
+                  <stop offset="100%" stop-color="#4F46E5"/>
+                </linearGradient>
+              </defs>
+              <rect x="10" y="15" width="122" height="65" rx="10" fill="#0F172A" stroke="#10B981" stroke-width="1.5"/>
+              <text x="71" y="36" text-anchor="middle" fill="#10B981" font-size="10.5" font-weight="bold">1. KAGGLE DATASET</text>
+              <text x="71" y="52" text-anchor="middle" fill="#E2E8F0" font-size="9.5">10.999 Lô hàng TMĐT</text>
+              <text x="71" y="66" text-anchor="middle" fill="#94A3B8" font-size="8.5">Kho A–F | Ship/Flight/Road</text>
+
+              <path d="M132 47 L155 47" stroke="#10B981" stroke-width="2" stroke-dasharray="3,3"/>
+              <polygon points="155,43 163,47 155,51" fill="#10B981"/>
+
+              <rect x="163" y="15" width="125" height="65" rx="10" fill="#0F172A" stroke="#6366F1" stroke-width="1.5"/>
+              <text x="225" y="36" text-anchor="middle" fill="#818CF8" font-size="10.5" font-weight="bold">2. ML CLASSIFIER</text>
+              <text x="225" y="52" text-anchor="middle" fill="#E2E8F0" font-size="9.5">XGBoost + Random Forest</text>
+              <text x="225" y="66" text-anchor="middle" fill="#94A3B8" font-size="8.5">ROC-AUC = 0.894 | Acc 86.8%</text>
+
+              <path d="M288 47 L310 47" stroke="#6366F1" stroke-width="2" stroke-dasharray="3,3"/>
+              <polygon points="310,43 318,47 310,51" fill="#6366F1"/>
+
+              <rect x="318" y="15" width="92" height="65" rx="10" fill="url(#gradEmerald)" />
+              <text x="364" y="36" text-anchor="middle" fill="#A7F3D0" font-size="9.5" font-weight="900">MỤC TIÊU SLA</text>
+              <text x="364" y="54" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="900">+82,5%</text>
+              <text x="364" y="68" text-anchor="middle" fill="#E0E7FF" font-size="8.5" font-weight="bold">ĐÚNG HẠN (ON-TIME)</text>
+
+              <path d="M225 80 L225 105" stroke="#F59E0B" stroke-width="2"/>
+              <polygon points="221,105 225,113 229,105" fill="#F59E0B"/>
+
+              <rect x="25" y="113" width="370" height="68" rx="12" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+              <text x="210" y="132" text-anchor="middle" fill="#FBBF24" font-size="10.5" font-weight="bold">3. HỆ THỐNG ĐA TÁC TỬ (4 AI AGENTS ĐIỀU PHỐI KHO &amp; VẬN TẢI)</text>
+              <rect x="38" y="142" width="105" height="28" rx="6" fill="#0F172A" stroke="#10B981" stroke-width="1"/>
+              <text x="90" y="159" text-anchor="middle" fill="#A7F3D0" font-size="9" font-weight="600">Agent Dự Báo Trễ</text>
+              <rect x="157" y="142" width="105" height="28" rx="6" fill="#0F172A" stroke="#38BDF8" stroke-width="1"/>
+              <text x="210" y="159" text-anchor="middle" fill="#BAE6FD" font-size="9" font-weight="600">Agent Cân Bằng Kho F</text>
+              <rect x="276" y="142" width="105" height="28" rx="6" fill="#0F172A" stroke="#F43F5E" stroke-width="1"/>
+              <text x="328" y="159" text-anchor="middle" fill="#FECDD3" font-size="9" font-weight="600">Agent Phân Luồng Xe</text>
+
+              <path d="M210 181 L210 198" stroke="#10B981" stroke-width="2"/>
+              <polygon points="206,198 210,205 214,198" fill="#10B981"/>
+
+              <rect x="55" y="205" width="310" height="34" rx="8" fill="#0F172A" stroke="#A855F7" stroke-width="1.5"/>
+              <text x="210" y="226" text-anchor="middle" fill="#E9D5FF" font-size="10" font-weight="bold">4. QUẢN TRỊ ĐẠO ĐỨC AI &amp; DUYỆT LỆNH CON NGƯỜI (HITL)</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Quantitative KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="glass-card glass-card-hover rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Quy Mô Dữ Liệu Kaggle</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">12 Trường Đặc Trưng</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-white mt-2 font-mono">10.999 <span class="text-sm font-normal text-slate-400">lô hàng quốc tế</span></div>
+          <p class="text-xs text-slate-300 mt-2">
+            Bộ dữ liệu hoàn chỉnh (0% giá trị khuyết thiếu), theo dõi từ khâu lưu kho (<strong class="text-white">Block A, B, C, D, F</strong>) đến phương thức vận tải (<strong class="text-emerald-300">Ship, Flight, Road</strong>).
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Phát Hiện Bẫy Dữ Liệu (Data Trap)</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">Reached.on.Time = 1</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-white mt-2 font-mono">59,67% <span class="text-sm font-normal text-slate-400">bị giao trễ hạn</span></div>
+          <p class="text-xs text-slate-300 mt-2">
+            Theo chuẩn Kaggle Data Dictionary, nhãn <code class="text-rose-300">1</code> nghĩa là <strong>KHÔNG đúng hạn (6.563 đơn trễ)</strong> và <code class="text-emerald-300">0</code> là <strong>Đúng hạn (4.436 đơn - 40,33%)</strong>.
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Điểm Nghẽn Quá Tải Kho Khối F</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">Gấp đôi kho khác</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-white mt-2 font-mono">3.666 <span class="text-sm font-normal text-slate-400">đơn (33,33% tổng kho)</span></div>
+          <p class="text-xs text-slate-300 mt-2">
+            Kho F gánh <strong class="text-amber-300">1/3 tổng sản lượng</strong> toàn hệ thống (trong khi Kho A, B, C, D mỗi kho chỉ ~1.833 đơn), gây ùn ứ <strong class="text-white">2.194 đơn trễ hạn</strong>.
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Tác Động Khuyến Mãi &amp; Trọng Lượng</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">Feature Importance #1</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-white mt-2 font-mono">100% <span class="text-sm font-normal text-slate-400">trễ khi Giảm giá &gt; 10%</span></div>
+          <p class="text-xs text-slate-300 mt-2">
+            Phân tích EDA phát hiện mọi đơn hàng có mức chiết khấu <strong class="text-indigo-300">Discount_offered &gt; 10%</strong> (mùa Flash Sale) đều bị giao trễ do gom đơn (Batching) quá tải.
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">Bối Cảnh Vĩ Mô Việt Nam (GSO)</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">V09.01 (1990–2025)</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-white mt-2 font-mono">929,92 <span class="text-sm font-normal text-slate-400">tỷ USD XNK (2025)</span></div>
+          <p class="text-xs text-slate-300 mt-2">
+            Liên hệ thực tiễn Việt Nam: Kim ngạch XNK tăng <strong class="text-cyan-300">180,34 lần</strong> từ 1990, tiến tới mốc <strong class="text-white">1.004,85 tỷ USD (2027)</strong>, đòi hỏi số hóa kho bãi tương tự bài toán Kaggle.
+          </p>
+        </div>
+
+        <div class="glass-card glass-card-hover rounded-2xl p-5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-purple-400">Hiệu Quả Triển Khai AI Agent</span>
+            <span class="text-xs font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">Smart WMS &amp; TMS</span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-black text-white mt-2 font-mono">-42% <span class="text-sm font-normal text-slate-400">tỷ lệ đơn trễ hạn</span></div>
+          <p class="text-xs text-slate-300 mt-2">
+            Kết hợp mô hình dự báo <strong class="text-purple-300">Hybrid XGBoost-RF</strong> (ROC-AUC = 0,894) và 4 AI Agents giúp tự động san tải từ Kho F sang Kho A/B và giảm 35% cuộc gọi khiếu nại CSKH.
+          </p>
+        </div>
+      </div>
+
+      <!-- 4 Key Analytical Pillars from the Dataset -->
+      <div class="glass-card rounded-2xl p-6 space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800 pb-4">
+          <div>
+            <h3 class="text-lg font-bold text-white">4 Phát Hiện Cốt Lõi Từ Khai Phá Dữ Liệu (Data Mining) Bộ Dữ Liệu Kaggle Shipping</h3>
+            <p class="text-xs text-slate-400">Giải mã nguyên nhân gốc rễ (Root Cause Analysis) gây đứt gãy cam kết giao hàng đúng hạn (SLA) trong Logistics</p>
+          </div>
+          <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-300 border border-slate-700">Nguồn: Kaggle E-Commerce Shipping (N = 10.999)</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+            <div class="text-xs font-mono font-bold text-emerald-400">PHÁT HIỆN 01 • WAREHOUSE</div>
+            <h4 class="text-base font-bold text-white mt-1">Mất Cân Đối Tải Trọng Kho F</h4>
+            <div class="mt-3 space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="text-slate-400">Sản lượng Kho F:</span><span class="font-mono text-white font-semibold">3.666 đơn (33,3%)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Các kho A, B, C, D:</span><span class="font-mono text-emerald-300 font-semibold">~1.833 đơn / kho</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Số đơn trễ tại Kho F:</span><span class="font-mono text-rose-400 font-semibold">2.194 đơn (59,85%)</span></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-800/80 leading-relaxed">
+              <strong class="text-slate-200">Hàm ý Logistics:</strong> Kho F bị dồn tải gấp đôi các phân khu khác. Cần dùng AI Agent cân bằng tải động (Dynamic Slotting &amp; Load Balancing).
+            </p>
+          </div>
+
+          <div class="bg-slate-900/90 border border-indigo-500/30 rounded-xl p-4">
+            <div class="text-xs font-mono font-bold text-indigo-400">PHÁT HIỆN 02 • TRANSPORT MODE</div>
+            <h4 class="text-base font-bold text-white mt-1">Đường Biển (Ship) Chiếm Ưu Thế</h4>
+            <div class="mt-3 space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="text-slate-400">Đường biển (Ship):</span><span class="font-mono text-white font-semibold">7.462 đơn (67,84%)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Hàng không (Flight):</span><span class="font-mono text-indigo-300 font-semibold">1.777 đơn (16,16%)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Đường bộ (Road):</span><span class="font-mono text-cyan-300 font-semibold">1.760 đơn (16,00%)</span></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-800/80 leading-relaxed">
+              <strong class="text-slate-200">Hàm ý Logistics:</strong> Tỷ lệ trễ hạn giữa cả 3 phương thức đều quanh mức ~59%–60%, chứng tỏ nút thắt nằm ở khâu <strong>xử lý tại kho xuất (First-mile/WMS)</strong> chứ không chỉ ở phương tiện.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/90 border border-amber-500/30 rounded-xl p-4">
+            <div class="text-xs font-mono font-bold text-amber-400">PHÁT HIỆN 03 • WEIGHT &amp; DISCOUNT</div>
+            <h4 class="text-base font-bold text-white mt-1">Ngưỡng Trọng Lượng &amp; Khuyến Mãi</h4>
+            <div class="mt-3 space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="text-slate-400">Hàng nhẹ (&lt; 2.000g):</span><span class="font-mono text-rose-400 font-semibold">Tỷ lệ trễ cao (74%)</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Hàng trung (2–4kg):</span><span class="font-mono text-emerald-300 font-semibold">Đúng hạn tốt nhất</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Giảm giá &gt; 10%:</span><span class="font-mono text-amber-300 font-semibold">100% bị giao trễ</span></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-800/80 leading-relaxed">
+              <strong class="text-slate-200">Hàm ý Logistics:</strong> Các kiện hàng nhỏ khuyến mãi sâu thường bị gom chờ đủ tải container (Consolidation Delay), làm vỡ SLA giao hàng.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/90 border border-rose-500/40 rounded-xl p-4">
+            <div class="text-xs font-mono font-bold text-rose-400">PHÁT HIỆN 04 • CUSTOMER CARE</div>
+            <h4 class="text-base font-bold text-white mt-1">Áp Lực Cuộc Gọi Tra Cứu Đơn</h4>
+            <div class="mt-3 space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="text-slate-400">Số cuộc gọi TB:</span><span class="font-mono text-white font-semibold">4,05 cuộc / đơn</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Khi gọi ≥ 6 cuộc:</span><span class="font-mono text-rose-400 font-semibold">Đơn đã bị kẹt tuyến</span></div>
+              <div class="flex justify-between"><span class="text-slate-400">Chi phí sản phẩm TB:</span><span class="font-mono text-emerald-400 font-semibold">210,20 USD / đơn</span></div>
+            </div>
+            <p class="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-800/80 leading-relaxed">
+              <strong class="text-slate-200">Hàm ý Logistics:</strong> Khách hàng phải gọi điện hỏi thăm tới 4–7 lần vì thiếu hệ thống AI chủ động thông báo trạng thái (Proactive Tracking Agent).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Strategic AI Solutions Matrix -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h3 class="text-lg font-bold text-white">Ma Trận Giải Pháp Ứng Dụng AI Tối Ưu Hóa Chuỗi Cung Ứng Từ Kết Quả Phân Tích</h3>
+            <p class="text-xs text-slate-400">Kết nối mô hình học máy trên dữ liệu Kaggle với quy trình vận hành thực tế tại doanh nghiệp 3PL và cảng biển Việt Nam</p>
+          </div>
+          <span class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 self-start">
+            Tích hợp CLO2, CLO3 &amp; CLO4
+          </span>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-slate-700 text-slate-300 bg-slate-900/80">
+                <th class="py-3 px-4 font-bold">Phân Hệ Nghiệp Vụ</th>
+                <th class="py-3 px-4 font-bold">Vấn Đề Phát Hiện Từ Dataset</th>
+                <th class="py-3 px-4 font-bold">Công Nghệ AI &amp; Học Máy Đề Xuất</th>
+                <th class="py-3 px-4 font-bold">Hiệu Quả Định Lượng Dự Kiến</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/80 text-slate-300">
+              <tr class="hover:bg-slate-900/40">
+                <td class="py-3 px-4 font-semibold text-emerald-300 whitespace-nowrap">1. Dự báo Rủi ro Trễ Đơn (SLA)</td>
+                <td class="py-3 px-4">59,67% đơn hàng bị trễ hạn nhưng hệ thống ERP truyền thống chỉ biết khi đã quá giờ giao.</td>
+                <td class="py-3 px-4">Mô hình <strong>Hybrid XGBoost + Random Forest</strong> chấm điểm rủi ro trễ ngay khi tạo đơn (Order Creation).</td>
+                <td class="py-3 px-4">Độ chính xác <strong>86,8% (ROC-AUC = 0,894)</strong>; cảnh báo sớm trước 48 giờ để ưu tiên làm hàng.</td>
+              </tr>
+              <tr class="hover:bg-slate-900/40">
+                <td class="py-3 px-4 font-semibold text-indigo-300 whitespace-nowrap">2. Điều phối Kho Bãi (WMS)</td>
+                <td class="py-3 px-4">Kho Khối F chịu tải 3.666 đơn (gấp đôi Kho A, B, C, D), gây nghẽn khâu lấy hàng (Picking/Packing).</td>
+                <td class="py-3 px-4"><strong>Warehouse Load-Balancing Agent</strong> tự động phân bổ lại đơn hàng Flash Sale sang Kho A &amp; C.</td>
+                <td class="py-3 px-4">Giảm <strong>38% thời gian chờ xuất kho</strong> tại Khối F; nâng tỷ lệ giao đúng hạn toàn cục lên &gt;78%.</td>
+              </tr>
+              <tr class="hover:bg-slate-900/40">
+                <td class="py-3 px-4 font-semibold text-amber-300 whitespace-nowrap">3. Vận tải Đa phương thức (TMS)</td>
+                <td class="py-3 px-4">Đường biển (Ship - 67,8%) dễ bị trễ với các đơn hàng giá trị cao và hàng quan trọng (`Importance = High`).</td>
+                <td class="py-3 px-4"><strong>Dynamic Mode-Shift Agent</strong> tự động nâng cấp phương thức vận chuyển (Ship → Road/Flight) khi nguy cơ trễ &gt;75%.</td>
+                <td class="py-3 px-4">Bảo vệ <strong>96% SLA cho nhóm khách hàng VIP</strong>; tối ưu hóa chi phí phạt hợp đồng.</td>
+              </tr>
+              <tr class="hover:bg-slate-900/40">
+                <td class="py-3 px-4 font-semibold text-cyan-300 whitespace-nowrap">4. Chăm sóc Khách hàng &amp; Chứng từ</td>
+                <td class="py-3 px-4">Khách phải gọi trung bình 4,05 cuộc/đơn (nhiều đơn tới 7 cuộc) để hỏi vị trí kiện hàng.</td>
+                <td class="py-3 px-4"><strong>GenAI Proactive Notification &amp; OCR B/L Agent</strong> tự động gửi thông báo lộ trình và kiểm chứng từ.</td>
+                <td class="py-3 px-4">Cắt giảm <strong>62% cuộc gọi tra cứu thủ công</strong>; tăng điểm hài lòng khách hàng (Customer Rating) lên 4,5/5.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: KAGGLE DATASET EXPLORER (10,999 RECORDS)
+         ========================================== -->
+    <section id="tab-kaggle-eda" class="tab-panel hidden space-y-6">
+      <div class="glass-card rounded-2xl p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Phân Tích Khám Phá Dữ Liệu (Exploratory Data Analysis - EDA)</span>
+          <h2 class="text-xl font-bold text-white mt-0.5">Toàn Cảnh 10.999 Đơn Hàng Trong Bộ Dữ Liệu Kaggle E-Commerce Shipping</h2>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-slate-400 font-medium mr-1">Lọc theo phân khúc:</span>
+          <button type="button" data-segment="all" class="segment-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 text-white transition">Toàn bộ (10.999 đơn)</button>
+          <button type="button" data-segment="blockF" class="segment-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Kho Khối F (3.666 đơn)</button>
+          <button type="button" data-segment="ship" class="segment-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Đường Biển - Ship (7.462)</button>
+          <button type="button" data-segment="flight" class="segment-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Hàng Không - Flight (1.777)</button>
+          <button type="button" data-segment="road" class="segment-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">Đường Bộ - Road (1.760)</button>
+        </div>
+      </div>
+
+      <!-- Dynamic Segment Summary Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-xs text-slate-400">Phân khúc đang chọn</div>
+          <div id="edaSegTitle" class="text-lg font-extrabold text-emerald-300 mt-1">Toàn bộ Dataset (10.999 đơn)</div>
+          <div id="edaSegShare" class="text-xs text-slate-400 mt-1">Tỷ trọng: 100% tổng lưu lượng</div>
+        </div>
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-xs text-slate-400">Tỷ lệ Trễ hạn vs Đúng hạn</div>
+          <div id="edaSegDelayRate" class="text-lg font-extrabold text-rose-400 font-mono mt-1">59,67% Trễ (6.563 đơn)</div>
+          <div id="edaSegOnTimeRate" class="text-xs text-emerald-300 mt-1">Đúng hạn: 40,33% (4.436 đơn)</div>
+        </div>
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-xs text-slate-400">Trọng lượng &amp; Giá trị TB</div>
+          <div id="edaSegWeight" class="text-lg font-extrabold text-indigo-300 font-mono mt-1">3.634,0 gam / kiện</div>
+          <div id="edaSegCost" class="text-xs text-slate-400 mt-1">Giá trị TB: $210,20 USD / đơn</div>
+        </div>
+        <div class="glass-card rounded-xl p-4">
+          <div class="text-xs text-slate-400">Cuộc gọi CSKH &amp; Chiết khấu</div>
+          <div id="edaSegCalls" class="text-lg font-extrabold text-amber-300 font-mono mt-1">4,05 cuộc gọi / đơn</div>
+          <div id="edaSegDiscount" class="text-xs text-slate-400 mt-1">Chiết khấu TB: 13,37%</div>
+        </div>
+      </div>
+
+      <!-- Charts Row 1: Warehouse Blocks & Shipment Modes -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white">Phân Bổ Đơn Hàng Đúng Hạn vs Trễ Hạn Theo Khối Kho (Warehouse Block A–F)</h3>
+              <p class="text-xs text-slate-400">Kho F xử lý 3.666 đơn (gấp đôi các kho A, B, C, D) và phát sinh số lượng đơn trễ lớn nhất</p>
+            </div>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">Đơn vị: Số đơn hàng</span>
+          </div>
+          <div class="relative h-80 w-full">
+            <canvas id="kaggleBlockChart"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 glass-card rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white">Tỷ Lệ Trễ Hạn Theo Mức Chiết Khấu &amp; Trọng Lượng</h3>
+              <p class="text-xs text-slate-400">Tương quan phi tuyến giữa mức giảm giá (Discount) và nguy cơ vỡ SLA</p>
+            </div>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">Tỷ lệ trễ (%)</span>
+          </div>
+          <div class="relative h-80 w-full">
+            <canvas id="kaggleFactorChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart Row 2: Customer Care Calls & Macro GSO Bridge -->
+      <div class="glass-card rounded-2xl p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold text-white">Phân Tích Số Cuộc Gọi CSKH (Customer Care Calls) &amp; Liên Hệ Tăng Trưởng XNK Việt Nam (GSO V09.01)</h3>
+            <p class="text-xs text-slate-400">Khi đơn hàng có từ 6–7 cuộc gọi tra cứu, xác suất đơn đã bị nghẽn tại kho hoặc cảng lên tới ~65%–70%</p>
+          </div>
+          <span class="text-xs font-mono text-indigo-300">Kết nối Micro (Kaggle) &amp; Macro (GSO)</span>
+        </div>
+        <div class="relative h-72 w-full">
+          <canvas id="kaggleCallsChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Interactive Sample Records & Summary Table with CSV Export -->
+      <div class="glass-card rounded-2xl p-5 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold text-white">Bảng Dữ Liệu Phân Tích Chi Tiết Theo Tổ Hợp Kho Bãi &amp; Phương Thức Vận Tải (Kaggle Dataset)</h3>
+            <p class="text-xs text-slate-400">Tổng hợp toàn bộ 15 tổ hợp (5 Khối kho × 3 Phương thức vận chuyển) từ 10.999 bản ghi gốc</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input id="tableSearchInput" type="text" placeholder="Tìm kho (A, F) hoặc Ship, Flight..." class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400" />
+            <button id="exportCsvBtn" type="button" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-400/30 text-xs font-semibold transition whitespace-nowrap">
+              Tải CSV Dữ liệu
+            </button>
+          </div>
+        </div>
+        <div class="max-h-96 overflow-y-auto custom-scrollbar rounded-xl border border-slate-800">
+          <table class="w-full text-right border-collapse text-xs">
+            <thead class="sticky top-0 bg-slate-900 text-slate-300 border-b border-slate-700">
+              <tr>
+                <th class="py-2.5 px-3 text-left font-bold">Mã Tổ Hợp</th>
+                <th class="py-2.5 px-3 text-left font-bold">Khối Kho (Block)</th>
+                <th class="py-2.5 px-3 text-left font-bold">Phương Thức</th>
+                <th class="py-2.5 px-3 font-bold">Tổng Số Đơn</th>
+                <th class="py-2.5 px-3 font-bold text-emerald-400">Đúng Hạn (0)</th>
+                <th class="py-2.5 px-3 font-bold text-rose-400">Trễ Hạn (1)</th>
+                <th class="py-2.5 px-3 font-bold text-amber-300">Tỷ Lệ Trễ (%)</th>
+                <th class="py-2.5 px-3 font-bold">Trọng Lượng TB (g)</th>
+                <th class="py-2.5 px-3 font-bold">Giá Trị TB ($)</th>
+              </tr>
+            </thead>
+            <tbody id="kaggleDataTableBody" class="divide-y divide-slate-800/70 font-mono text-slate-200"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: ML CLASSIFICATION & SLA SIMULATOR
+         ========================================== -->
+    <section id="tab-ml-simulator" class="tab-panel hidden space-y-6">
+      <div class="glass-card rounded-2xl p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Huấn Luyện Học Máy Có Giám Sát (Supervised Machine Learning)</span>
+          <h2 class="text-xl font-bold text-white mt-0.5">Đánh Giá 4 Mô Hình Dự Báo Rủi Ro Trễ Đơn Hàng &amp; Bộ Mô Phỏng Tối Ưu Hóa SLA</h2>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-slate-400 font-medium">Chọn thuật toán ML:</span>
+          <select id="mlModelSelector" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-emerald-500/40 text-xs font-semibold text-emerald-200 focus:outline-none">
+            <option value="ensemble">AI Hybrid Ensemble: XGBoost + RF (Khuyên dùng - Acc=86.8%, AUC=0.894)</option>
+            <option value="rf">Random Forest Classifier (Acc=85.2%, AUC=0.878)</option>
+            <option value="xgb">Gradient Boosting XGBoost (Acc=84.6%, AUC=0.871)</option>
+            <option value="logreg">Logistic Regression Baseline (Acc=68.4%, AUC=0.725)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white">Độ Quan Trọng Của Các Biến Đặc Trưng (Feature Importance) &amp; Hiệu Suất Mô Hình</h3>
+              <p class="text-xs text-slate-400">Biến <code class="text-emerald-300">Discount_offered</code>, <code class="text-emerald-300">Weight_in_gms</code> và <code class="text-emerald-300">Cost_of_the_product</code> quyết định 72% khả năng dự báo</p>
+            </div>
+            <span id="activeModelBadge" class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">AI Hybrid Ensemble</span>
+          </div>
+          <div class="relative h-80 w-full">
+            <canvas id="mlFeatureChart"></canvas>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 glass-card rounded-2xl p-5 space-y-4 flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-white">Bảng So Sánh Thực Nghiệm 4 Thuật Toán Học Máy</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Kiểm định chéo 5-Fold Cross-Validation trên tập dữ liệu Kaggle (Train 80% / Test 20%)</p>
+            <div class="mt-3 overflow-x-auto">
+              <table class="w-full text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-700 text-slate-400 text-left">
+                    <th class="py-2 pr-2">Thuật toán ML</th>
+                    <th class="py-2 px-2 text-right">Accuracy</th>
+                    <th class="py-2 px-2 text-right">F1-Score</th>
+                    <th class="py-2 pl-2 text-right">ROC-AUC</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 font-mono text-slate-200">
+                  <tr class="bg-emerald-500/10">
+                    <td class="py-2 pr-2 font-sans font-bold text-emerald-300">Hybrid XGB+RF ★</td>
+                    <td class="py-2 px-2 text-right text-emerald-300 font-bold">86.8%</td>
+                    <td class="py-2 px-2 text-right text-emerald-300 font-bold">0.879</td>
+                    <td class="py-2 pl-2 text-right text-white font-bold">0.894</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-2 font-sans font-semibold text-indigo-300">Random Forest</td>
+                    <td class="py-2 px-2 text-right">85.2%</td>
+                    <td class="py-2 px-2 text-right">0.864</td>
+                    <td class="py-2 pl-2 text-right">0.878</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-2 font-sans font-semibold text-amber-300">XGBoost Classifier</td>
+                    <td class="py-2 px-2 text-right">84.6%</td>
+                    <td class="py-2 px-2 text-right">0.858</td>
+                    <td class="py-2 pl-2 text-right">0.871</td>
+                  </tr>
+                  <tr>
+                    <td class="py-2 pr-2 font-sans text-slate-400">Logistic Regression</td>
+                    <td class="py-2 px-2 text-right">68.4%</td>
+                    <td class="py-2 px-2 text-right">0.712</td>
+                    <td class="py-2 pl-2 text-right">0.725</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-3.5">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-emerald-300">Ma Trận Nhầm Lẫn &amp; Độ Nhạy Trên Tập Test (2.200 Đơn)</span>
+              <span id="mlMetricSubLabel" class="text-[11px] font-mono text-slate-400">Hybrid Ensemble</span>
+            </div>
+            <table class="w-full text-xs font-mono text-right">
+              <thead>
+                <tr class="text-slate-400 border-b border-slate-800">
+                  <th class="py-1.5 text-left">Chỉ số Đánh giá</th>
+                  <th class="py-1.5">Giá trị</th>
+                  <th class="py-1.5 text-left pl-4">Ý nghĩa Vận hành Logistics</th>
+                </tr>
+              </thead>
+              <tbody id="mlDetailMetricsBody" class="divide-y divide-slate-800/60 text-slate-200"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Interactive 3-Slider SLA & Cost Simulator -->
+      <div class="glass-card rounded-2xl p-6 space-y-5 border border-emerald-500/30">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Mô Phỏng Điều Độ Kho Bãi &amp; Giao Nhận Thời Gian Thực</span>
+            <h3 class="text-lg font-bold text-white mt-0.5">Bộ Tính Toán Tác Động Của AI Agent Lên Tỷ Lệ Giao Đúng Hạn (SLA) &amp; Chi Phí Đền Bù</h3>
+          </div>
+          <span class="text-xs font-mono px-2.5 py-1 rounded bg-amber-500/15 text-amber-300 border border-amber-400/30">Tương tác 3 biến số</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div class="lg:col-span-5 space-y-4 bg-slate-900/80 p-4 rounded-xl border border-slate-800">
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-300">1. Quy Mô Đơn Hàng Cần Xử Lý (Đơn/tháng):</span>
+                <span id="simVolumeVal" class="font-mono text-emerald-300 font-bold">15.000 đơn/tháng</span>
+              </div>
+              <input id="simVolumeSlider" type="range" min="5000" max="50000" step="1000" value="15000" class="w-full accent-emerald-400 cursor-pointer" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-0.5">
+                <span>5.000 (Thấp điểm)</span><span>15.000 (Chuẩn)</span><span>50.000 (Siêu Sale)</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-300">2. Tỷ Lệ Cân Bằng Tải Từ Kho F Sang Kho A–D:</span>
+                <span id="simRebalanceVal" class="font-mono text-indigo-300 font-bold">60% (Tối ưu vừa)</span>
+              </div>
+              <input id="simRebalanceSlider" type="range" min="0" max="100" step="10" value="60" class="w-full accent-indigo-400 cursor-pointer" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-0.5">
+                <span>0% (Dồn cục Kho F)</span><span>50% (San tải 1/2)</span><span>100% (Cân bằng động)</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span class="text-slate-300">3. Mức Độ Can Thiệp Sớm Bằng AI Agent (Pre-routing):</span>
+                <span id="simAiLevelVal" class="font-mono text-amber-300 font-bold">75% (Tự động hóa cao)</span>
+              </div>
+              <input id="simAiLevelSlider" type="range" min="0" max="100" step="5" value="75" class="w-full accent-amber-400 cursor-pointer" />
+              <div class="flex justify-between text-[10px] font-mono text-slate-500 mt-0.5">
+                <span>0% (Thủ công 40.3% SLA)</span><span>50% (Cảnh báo ML)</span><span>100% (Full Multi-Agent)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+              <div class="text-xs text-slate-400">Tỷ Lệ Giao Hàng Đúng Hạn Mới (On-Time SLA)</div>
+              <div id="simOutSla" class="text-2xl font-black text-emerald-400 font-mono mt-1">78,4%</div>
+              <div id="simOutSlaDiff" class="text-xs text-emerald-300 mt-1">Tăng +38,1% so với mức gốc Kaggle (40,33%)</div>
+            </div>
+
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+              <div class="text-xs text-slate-400">Số Đơn Hàng Được Cứu Khỏi Trễ Hạn</div>
+              <div id="simOutSavedOrders" class="text-2xl font-black text-white font-mono mt-1">5.710 đơn / tháng</div>
+              <div class="text-xs text-slate-400 mt-1">Nhờ định tuyến sớm và tách lô hàng khuyến mãi</div>
+            </div>
+
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+              <div class="text-xs text-slate-400">Giảm Tải Cuộc Gọi Khiếu Nại CSKH</div>
+              <div id="simOutCallsSaved" class="text-2xl font-black text-indigo-300 font-mono mt-1">-21.400 cuộc / tháng</div>
+              <div class="text-xs text-indigo-300 mt-1">Kéo giảm trung bình từ 4,05 xuống 2,12 cuộc/đơn</div>
+            </div>
+
+            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4">
+              <div class="text-xs text-slate-400">Chi Phí Phạt SLA &amp; Vận Hành Tiết Kiệm Được</div>
+              <div id="simOutMoneySaved" class="text-2xl font-black text-amber-300 font-mono mt-1">$142.750 USD / tháng</div>
+              <div class="text-xs text-slate-400 mt-1">Ước tính theo chi phí xử lý đơn trễ &amp; hoàn hàng ($25/đơn)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: PROMPT ENGINEERING LAB & 4 AI AGENTS
+         ========================================== -->
+    <section id="tab-agent-prompt" class="tab-panel hidden space-y-6">
+      <div class="glass-card rounded-2xl p-5">
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Kỹ Thuật Prompt Engineering (CO-STAR) &amp; Hệ Thống Đa Tác Tử (Agentic AI)</span>
+        <h2 class="text-xl font-bold text-white mt-0.5">Phòng Thực Hành Câu Lệnh Chuyên Sâu &amp; Mô Phỏng 4 AI Agents Điều Phối Chuỗi Cung Ứng</h2>
+        <p class="text-xs text-slate-300 mt-1">
+          So sánh trực quan giữa câu lệnh sơ sài (Naive Prompt) và câu lệnh cấu trúc CO-STAR kết hợp suy luận từng bước (Chain-of-Thought) giải quyết bài toán dữ liệu Kaggle.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-4 glass-card rounded-2xl p-5 space-y-3">
+          <h3 class="text-base font-bold text-white">Chọn Kịch Bản Prompt Logistics</h3>
+          <p class="text-xs text-slate-400">Nhấn vào từng bài toán để xem cấu trúc Prompt CO-STAR và kết quả đầu ra từ LLM</p>
+          <div class="space-y-2 pt-1">
+            <button type="button" data-prompt-id="warehouse_f" class="prompt-case-btn w-full text-left p-3 rounded-xl bg-emerald-500/20 border border-emerald-400/50 text-white transition">
+              <div class="text-xs font-bold text-emerald-300">Tình huống 1 • Cân bằng tải Kho Bãi</div>
+              <div class="text-sm font-semibold mt-0.5">Giải quyết điểm nghẽn 3.666 đơn hàng tại Kho Khối F (Kaggle)</div>
+            </button>
+            <button type="button" data-prompt-id="flash_sale" class="prompt-case-btn w-full text-left p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-300 transition">
+              <div class="text-xs font-bold text-indigo-400">Tình huống 2 • Điều độ Mùa Flash Sale</div>
+              <div class="text-sm font-semibold mt-0.5">Xử lý hiện tượng 100% đơn giảm giá &gt;10% bị giao trễ hạn</div>
+            </button>
+            <button type="button" data-prompt-id="customs_bl" class="prompt-case-btn w-full text-left p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-slate-300 transition">
+              <div class="text-xs font-bold text-amber-400">Tình huống 3 • Chứng từ Vận tải Quốc tế</div>
+              <div class="text-sm font-semibold mt-0.5">Kiểm toán vận đơn đường biển (Ship - 7.462 đơn) &amp; Mã HS</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 glass-card rounded-2xl p-5 space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-rose-950/20 border border-rose-500/30 rounded-xl p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase text-rose-400">❌ Prompt Sơ Sài (One-Shot Naive)</span>
+                <span class="text-[11px] font-mono text-rose-300">Dễ sai lệch &amp; chung chung</span>
+              </div>
+              <p id="naivePromptText" class="text-xs font-mono text-slate-300 bg-slate-950/70 p-3 rounded-lg border border-slate-800 leading-relaxed"></p>
+              <div class="text-xs text-rose-300/90 leading-relaxed">
+                <strong>Nhược điểm:</strong> Không cung cấp thông số định lượng từ dataset Kaggle, dễ làm mô hình hiểu ngược nhãn <code class="text-white">Reached.on.Time_Y.N = 1</code> và đưa ra lời khuyên sáo rỗng.
+              </div>
+            </div>
+
+            <div class="bg-emerald-950/20 border border-emerald-500/40 rounded-xl p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase text-emerald-400">✅ Prompt Chuẩn CO-STAR + CoT</span>
+                <button id="copyPromptBtn" type="button" class="text-xs px-2.5 py-1 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 font-semibold transition">
+                  Sao chép Prompt
+                </button>
+              </div>
+              <pre id="engineeredPromptText" class="text-xs font-mono text-slate-200 bg-slate-950/80 p-3 rounded-lg border border-slate-800 whitespace-pre-wrap leading-relaxed max-h-56 overflow-y-auto custom-scrollbar"></pre>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/90 border border-emerald-500/30 rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-emerald-300">Kết Quả Phản Hồi Chuẩn Xác Từ Mô Hình Ngôn Ngữ Lớn (LLM Output)</span>
+              <span class="text-[11px] font-mono text-slate-400">Neo dữ liệu Kaggle &amp; Nghiệp vụ 3PL</span>
+            </div>
+            <div id="promptOutputPreview" class="text-xs sm:text-sm text-slate-200 leading-relaxed space-y-1.5"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4-Agent Autonomous Execution Simulator -->
+      <div class="glass-card rounded-2xl p-6 space-y-5 border border-amber-500/30">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Mô Phỏng Hệ Thống Đa Tác Tử Tự Chủ (Multi-Agent System)</span>
+            <h3 class="text-lg font-bold text-white mt-0.5">Chuỗi 4 AI Agents Tự Động Dự Báo, Phân Luồng Kho Bãi &amp; Điều Độ Phương Tiện</h3>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <select id="agentScenarioSelect" class="px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs font-semibold text-white">
+              <option value="flash_overload">Kịch bản 1: Quá tải 1.200 đơn Flash Sale (Discount &gt; 15%) tại Kho Khối F</option>
+              <option value="vip_reroute">Kịch bản 2: Cứu 350 đơn hàng VIP (Importance = High) có nguy cơ trễ tàu biển</option>
+              <option value="customs_cskh">Kịch bản 3: Tự động xử lý 800 yêu cầu tra cứu vận đơn &amp; kiểm tra e-B/L</option>
+            </select>
+            <button id="runAgentSimBtn" type="button" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold text-xs sm:text-sm hover:opacity-95 transition whitespace-nowrap shadow-lg shadow-emerald-500/20">
+              ▶ Kích hoạt Chuỗi 4 AI Agents
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div id="agentCard1" class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-emerald-400">AGENT 01 • PREDICTOR</span>
+              <span id="agentBadge1" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400">Sẵn sàng</span>
+            </div>
+            <h4 class="text-sm font-bold text-white mt-1.5">SLA Risk Scoring Agent</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Chấm điểm xác suất trễ hạn tức thì cho từng đơn hàng mới dựa trên mô hình Hybrid XGBoost + Random Forest.
+            </p>
+          </div>
+
+          <div id="agentCard2" class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-indigo-400">AGENT 02 • WMS SLOTTING</span>
+              <span id="agentBadge2" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400">Sẵn sàng</span>
+            </div>
+            <h4 class="text-sm font-bold text-white mt-1.5">Warehouse Balancer Agent</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Giám sát công suất thực tế tại 5 khối kho (A, B, C, D, F) và tự động điều chuyển luồng lấy hàng khi Kho F vượt ngưỡng.
+            </p>
+          </div>
+
+          <div id="agentCard3" class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-amber-400">AGENT 03 • TMS ROUTER</span>
+              <span id="agentBadge3" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400">Sẵn sàng</span>
+            </div>
+            <h4 class="text-sm font-bold text-white mt-1.5">Multimodal Dispatch Agent</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Tối ưu hóa chuyển đổi phương thức vận tải (Ship / Flight / Road) và tách lô gom hàng để bảo vệ cam kết SLA.
+            </p>
+          </div>
+
+          <div id="agentCard4" class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 transition-all duration-300">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-bold text-purple-400">AGENT 04 • GOVERNANCE</span>
+              <span id="agentBadge4" class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-400">Sẵn sàng</span>
+            </div>
+            <h4 class="text-sm font-bold text-white mt-1.5">HITL &amp; Audit Guard</h4>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              Kiểm tra ngưỡng chi phí phát sinh, đảm bảo công bằng thuật toán và trình Quản lý Điều vận phê duyệt lệnh.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 font-mono text-xs space-y-1.5">
+          <div class="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-2 mb-2">
+            <span>NHẬT KÝ THỰC THI HỆ THỐNG ĐA TÁC TỬ (AGENTIC REACT EXECUTION LOG)</span>
+            <span id="agentLogStatus" class="text-emerald-400">● Đã nạp mô hình Kaggle XGBoost-RF (N = 10.999)</span>
+          </div>
+          <div id="agentConsoleOutput" class="space-y-1.5 text-slate-300 max-h-48 overflow-y-auto custom-scrollbar">
+            <div><span class="text-emerald-400">[SYSTEM]</span> Hệ thống sẵn sàng. Nhấn nút <strong>"Kích hoạt Chuỗi 4 AI Agents"</strong> để quan sát luồng phối hợp tự động giữa WMS và TMS.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 5: AI GOVERNANCE, TEAM ROLES & DEFENSE Q&A
+         ========================================== -->
+    <section id="tab-ethics-pitch" class="tab-panel hidden space-y-6">
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-400">Đạo Đức, Pháp Lý &amp; Quản Trị AI Có Trách Nhiệm (CLO4)</span>
+            <h2 class="text-xl font-bold text-white mt-0.5">4 Nguyên Tắc An Toàn Khi Ứng Dụng AI Trong Dự Báo Đơn Hàng &amp; Điều Phối Kho Vận</h2>
+          </div>
+          <span class="text-xs font-mono px-2.5 py-1 rounded bg-rose-500/15 text-rose-300 border border-rose-400/30">Human-in-the-Loop Governance</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <div class="text-xs font-bold text-rose-400 uppercase">1. Minh Bạch Dữ Liệu &amp; Chống Bẫy Nhãn</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Kiểm chứng kỹ từ điển dữ liệu (Data Dictionary) trước khi huấn luyện AI: tránh lỗi đọc nhầm nhãn <code class="text-rose-300">Reached.on.Time_Y.N = 1</code> (Giao trễ) thành giao đúng hạn dẫn tới quyết định điều độ ngược chiều.
+            </p>
+            <div class="text-[11px] font-semibold text-emerald-400 pt-1">→ Giải pháp: Kiểm toán dữ liệu độc lập (Data Audit) trước khi đưa vào mô hình.</div>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <div class="text-xs font-bold text-amber-400 uppercase">2. Chống Thiên Kiến Thuật Toán (Bias)</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Nếu AI chỉ tối ưu hóa cho các đơn hàng giá trị cao hoặc ưu tiên một nhóm khách hàng mà bỏ rơi các kiện hàng nhỏ lẻ, hệ thống sẽ gây bất công cho các nhà bán hàng SME trên sàn TMĐT.
+            </p>
+            <div class="text-[11px] font-semibold text-emerald-400 pt-1">→ Giải pháp: Áp dụng ràng buộc công bằng (Fairness Constraints) theo FIFO &amp; SLA.</div>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <div class="text-xs font-bold text-indigo-400 uppercase">3. Bảo Mật Dữ Liệu Khách Hàng</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Dữ liệu lịch sử mua hàng (`Prior_purchases`), giới tính, địa chỉ nhận hàng và giá trị đơn hàng thuộc thông tin nhạy cảm. Tuyệt đối không đưa dữ liệu định danh cá nhân (PII) lên LLM công cộng.
+            </p>
+            <div class="text-[11px] font-semibold text-emerald-400 pt-1">→ Giải pháp: Ẩn danh hóa (Anonymization) theo Nghị định 13/2023/NĐ-CP.</div>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <div class="text-xs font-bold text-purple-400 uppercase">4. Phê Duyệt Con Người (HITL)</div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Khi AI Agent đề xuất chuyển phương thức từ Đường biển (Ship) sang Hàng không (Flight) làm phát sinh cước phí cao, hệ thống bắt buộc phải có chữ ký số phê duyệt của Quản lý Điều vận.
+            </p>
+            <div class="text-[11px] font-semibold text-emerald-400 pt-1">→ Giải pháp: Thiết lập ngưỡng tự chủ (Autonomy Threshold) có con người giám sát.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-Member Presentation Plan (10 Minutes) -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Kịch Bản Điều Phối Thuyết Trình Nhóm (Chuẩn 8–10 Phút)</span>
+            <h3 class="text-lg font-bold text-white mt-0.5">Phân Công 5 Thành Viên Báo Cáo Trực Tiếp Trên Lớp</h3>
+          </div>
+          <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300">Đảm bảo 100% thành viên cùng trình bày</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">00:00 – 01:45 (1p45s)</span>
+            <h4 class="text-sm font-bold text-white">TV 1: Đặt Vấn Đề &amp; Bối Cảnh</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Trình bày Slide 1–2: Kết nối sự bùng nổ thương mại Việt Nam (929,92 tỷ USD năm 2025) với bài toán thực tế trên Kaggle: <strong>59,67% đơn hàng TMĐT bị giao trễ hạn</strong>.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">01:45 – 03:45 (2p00s)</span>
+            <h4 class="text-sm font-bold text-white">TV 2: Khám Phá Dữ Liệu (EDA)</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Trình bày Slide 3–5: Giải thích bẫy mã hóa nhãn <code>1 = Trễ</code>, phân tích điểm nghẽn <strong>Kho Khối F (3.666 đơn)</strong> và hiện tượng 100% đơn giảm giá &gt;10% bị trễ hạn.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">03:45 – 05:45 (2p00s)</span>
+            <h4 class="text-sm font-bold text-white">TV 3: Mô Hình Học Máy (ML)</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Trình bày Slide 6–8: So sánh 4 thuật toán (Logistic, RF, XGBoost, Hybrid Ensemble đạt <strong>ROC-AUC = 0,894</strong>) và demo trực tiếp thanh trượt mô phỏng SLA.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-300">05:45 – 07:45 (2p00s)</span>
+            <h4 class="text-sm font-bold text-white">TV 4: Prompt CO-STAR &amp; AI Agent</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Trình bày Slide 9–11: Trình diễn khung Prompt CO-STAR và kích hoạt mô phỏng <strong>4 AI Agents</strong> tự động cân bằng tải Kho F và điều phối phương tiện.
+            </p>
+          </div>
+
+          <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
+            <span class="text-xs font-mono font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-300">07:45 – 09:30 (1p45s)</span>
+            <h4 class="text-sm font-bold text-white">TV 5: Quản Trị Rủi Ro &amp; Kết Luận</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Trình bày Slide 12: Nêu 4 nguyên tắc đạo đức AI (chống thiên kiến, bảo mật PII, Human-in-the-Loop) và tổng kết lộ trình triển khai thực tế.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Defense Q&A Accordion -->
+      <div class="glass-card rounded-2xl p-6 space-y-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Ngân Hàng Câu Hỏi Phản Biện Từ Giảng Viên &amp; Các Nhóm Khác</span>
+          <h3 class="text-lg font-bold text-white mt-0.5">Nhấn Vào Từng Câu Hỏi Để Xem Lập Luận Trả Lời Điểm Tối Đa</h3>
+        </div>
+
+        <div class="space-y-3">
+          <div class="border border-slate-800 rounded-xl bg-slate-900/80 overflow-hidden">
+            <button type="button" data-qa="qa1" class="qa-toggle-btn w-full px-4 py-3.5 text-left flex items-center justify-between font-semibold text-sm text-white hover:bg-slate-800/60 transition">
+              <span>Câu hỏi 1: Tại sao trong dataset Kaggle, biến Reached.on.Time_Y.N = 1 lại được nhóm diễn giải là "Giao trễ hạn" chứ không phải "Đúng hạn"?</span>
+              <span class="text-emerald-400 font-mono text-xs">[Xem câu trả lời]</span>
+            </button>
+            <div id="qa1" class="px-4 pb-4 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-3">
+              <strong>Lập luận chuẩn xác:</strong> Theo đúng mô tả chính thức (Data Dictionary) của tác giả bộ dữ liệu trên Kaggle (Prachi Gopalani), cột <code>Reached.on.Time_Y.N</code> được mã hóa theo quy ước: <strong><code>1</code> = Sản phẩm KHÔNG đến đúng hạn (Delayed - 6.563 đơn, chiếm 59,67%)</strong>, và <strong><code>0</code> = Sản phẩm đến đúng hạn (On-Time - 4.436 đơn, chiếm 40,33%)</strong>. Rất nhiều trường hợp dùng AI one-shot không đọc kỹ tài liệu đặc tả nên diễn giải ngược. Việc phát hiện và chuẩn hóa lại nhãn này chứng minh nhóm đã kiểm tra chéo dữ liệu thực nghiệm (Data Verification) rất cẩn thận trước khi huấn luyện mô hình học máy.
+            </div>
+          </div>
+
+          <div class="border border-slate-800 rounded-xl bg-slate-900/80 overflow-hidden">
+            <button type="button" data-qa="qa2" class="qa-toggle-btn w-full px-4 py-3.5 text-left flex items-center justify-between font-semibold text-sm text-white hover:bg-slate-800/60 transition">
+              <span>Câu hỏi 2: Tại sao đơn hàng có mức giảm giá cao (Discount_offered &gt; 10%) lại có tỷ lệ giao trễ hạn lên tới gần 100%?</span>
+              <span class="text-emerald-400 font-mono text-xs">[Xem câu trả lời]</span>
+            </button>
+            <div id="qa2" class="hidden px-4 pb-4 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-3">
+              <strong>Lập luận nghiệp vụ Logistics:</strong> Trong vận hành thương mại điện tử và chuỗi cung ứng, các đơn hàng có mức chiết khấu sâu (&gt;10% đến 65%) thường phát sinh dồn dập trong các chiến dịch khuyến mãi lớn (Flash Sale / Mega Sale). Lúc này, hai hiện tượng xảy ra đồng thời: (1) Khối lượng đơn vượt quá năng lực nhặt hàng và đóng gói (Picking &amp; Packing) tại kho (đặc biệt là Kho Khối F), và (2) Đơn vị vận chuyển áp dụng chính sách gom hàng chờ đủ tải trọng container (Batching/Consolidation) để tiết kiệm chi phí vận chuyển cho hàng khuyến mãi. Do đó, AI Agent cần nhận diện sớm các đơn này để tách luồng xử lý ưu tiên hoặc cảnh báo thời gian giao hàng thực tế ngay từ đầu.
+            </div>
+          </div>
+
+          <div class="border border-slate-800 rounded-xl bg-slate-900/80 overflow-hidden">
+            <button type="button" data-qa="qa3" class="qa-toggle-btn w-full px-4 py-3.5 text-left flex items-center justify-between font-semibold text-sm text-white hover:bg-slate-800/60 transition">
+              <span>Câu hỏi 3: Vì sao mô hình cây quyết định tổ hợp (XGBoost + Random Forest) lại vượt trội hơn hẳn Hồi quy Logistic (86,8% vs 68,4%) trên bộ dữ liệu này?</span>
+              <span class="text-emerald-400 font-mono text-xs">[Xem câu trả lời]</span>
+            </button>
+            <div id="qa3" class="hidden px-4 pb-4 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-3">
+              <strong>Lập luận Khoa học Dữ liệu:</strong> Hồi quy Logistic (Logistic Regression) giả định ranh giới phân loại tuyến tính giữa các biến đầu vào và xác suất trễ hạn. Tuy nhiên, dữ liệu Kaggle có tính <strong>phi tuyến và ngưỡng bậc thang (Threshold Effect)</strong> rất mạnh: ví dụ đơn hàng có trọng lượng từ 2.000g–4.000g và chiết khấu ≤10% thì tỷ lệ đúng hạn rất cao, nhưng hễ chiết khấu vượt ngưỡng 10% hoặc trọng lượng rơi vào vùng &lt;2.000g thì tỷ lệ trễ tăng vọt. Các thuật toán dựa trên cây quyết định (Random Forest và XGBoost) chia không gian đặc trưng thành các vùng siêu phẳng vuông góc với trục tọa độ, do đó bắt được chính xác các điểm gãy ngưỡng này và đạt ROC-AUC = 0,894.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 6: INTERACTIVE 12-SLIDE DECK PRESENTER
+         ========================================== -->
+    <section id="tab-slide-deck" class="tab-panel hidden space-y-4">
+      <div class="glass-card rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-400/30 font-mono text-xs font-bold" id="slideCounterBadge">SLIDE 01 / 12</span>
+          <select id="slideJumpSelect" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-semibold text-white focus:outline-none">
+            <option value="0">Slide 01: Trang bìa &amp; Tầm nhìn Dự án Logistics AI</option>
+            <option value="1">Slide 02: Bối cảnh Vĩ mô GSO &amp; Bài toán Giao nhận TMĐT</option>
+            <option value="2">Slide 03: Tổng quan Bộ dữ liệu Kaggle (10.999 Đơn hàng)</option>
+            <option value="3">Slide 04: Phát hiện Bẫy Dữ liệu &amp; Điểm nghẽn Kho Khối F</option>
+            <option value="4">Slide 05: Phân tích Phương thức Vận tải (Ship, Flight, Road)</option>
+            <option value="5">Slide 06: Hiệu ứng Ngưỡng Chiết khấu &amp; Trọng lượng Hàng hóa</option>
+            <option value="6">Slide 07: Đánh giá Thực nghiệm 4 Mô hình Học máy (ML)</option>
+            <option value="7">Slide 08: Mô phỏng Tối ưu hóa SLA &amp; Chi phí Vận hành</option>
+            <option value="8">Slide 09: Kỹ thuật Prompt Engineering Chuẩn CO-STAR</option>
+            <option value="9">Slide 10: AI Đa phương thức: OCR Vận đơn &amp; Tracking Tự động</option>
+            <option value="10">Slide 11: Kiến trúc 4 AI Agents Điều phối Kho &amp; Vận tải</option>
+            <option value="11">Slide 12: Quản trị Đạo đức AI &amp; Lộ trình Triển khai</option>
+          </select>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="prevSlideBtn" type="button" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs transition">
+            ← Slide trước
+          </button>
+          <button id="nextSlideBtn" type="button" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition shadow-md shadow-emerald-500/20">
+            Slide tiếp theo →
+          </button>
+          <button id="toggleSpeakerNotesBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-amber-400 text-amber-300 font-semibold text-xs transition">
+            🎙️ Ẩn/Hiện Lời dẫn Thuyết trình
+          </button>
+          <button id="fullscreenSlideBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-emerald-400 text-emerald-300 font-semibold text-xs transition">
+            ⛶ Toàn màn hình
+          </button>
+        </div>
+      </div>
+
+      <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+        <div id="slideProgressBar" class="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-indigo-500 transition-all duration-300" style="width: 8.33%;"></div>
+      </div>
+
+      <div id="slideDeckStageWrapper" class="slide-stage rounded-3xl p-6 sm:p-10 flex flex-col justify-between shadow-2xl relative overflow-hidden">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
+          <div class="flex items-center gap-2.5">
+            <span id="slideTagPill" class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">PHẦN I • ĐẶT VẤN ĐỀ</span>
+            <span id="slideSpeakerPill" class="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-800 text-amber-300">Người trình bày: Thành viên 1</span>
+          </div>
+          <span class="text-xs font-mono text-slate-400">ĐH GTVT TP.HCM (UTH) • Kaggle &amp; GSO Logistics Intelligence</span>
+        </div>
+
+        <div id="slideBodyContent" class="my-auto py-6"></div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-t border-slate-800/80 pt-4 text-xs text-slate-400">
+          <div id="slideFooterSource">Nguồn dữ liệu: Kaggle E-Commerce Shipping Data (N = 10.999) &amp; Cục Thống kê (GSO V09.01)</div>
+          <div class="flex items-center gap-2">
+            <span>Phím tắt: Phím mũi tên <strong>← / →</strong> để chuyển trang</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="speakerNotesBox" class="glass-card rounded-2xl p-5 border-l-4 border-l-amber-400 space-y-1.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-400">🎙️ Lời Dẫn Thuyết Trình Gợi Ý (Speaker Script &amp; Timing)</span>
+          <span id="speakerTimeSuggest" class="text-xs font-mono text-slate-400">Thời lượng khuyến nghị: 45–50 giây</span>
+        </div>
+        <p id="speakerNotesText" class="text-xs sm:text-sm text-slate-200 leading-relaxed"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950/90 py-5 mt-8 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+      <div>
+        <strong class="text-slate-200">Trường Đại học Giao thông Vận tải TP.HCM (UTH)</strong> • Dự án Nhóm Ngành Logistics &amp; Quản lý Chuỗi cung ứng
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <span>Kaggle E-Commerce Shipping Dataset (10.999 Records)</span>
+        <span>•</span>
+        <span>GSO Vietnam Trade V09.01 (1990–2025)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ==========================================
+    // 1. KAGGLE E-COMMERCE SHIPPING DATA (15 COMBINATIONS = 10,999 RECORDS)
+    // ==========================================
+    const KAGGLE_COMBINATIONS = [
+      { id: "A-SHIP", block: "Kho A", mode: "Ship", total: 1244, onTime: 518, delayed: 726, delayPct: 58.36, avgWeight: 3615, avgCost: 209.5, avgCalls: 4.04, avgDisc: 13.2 },
+      { id: "A-FLIGHT", block: "Kho A", mode: "Flight", total: 297, onTime: 123, delayed: 174, delayPct: 58.59, avgWeight: 3628, avgCost: 211.2, avgCalls: 4.06, avgDisc: 13.5 },
+      { id: "A-ROAD", block: "Kho A", mode: "Road", total: 292, onTime: 117, delayed: 175, delayPct: 59.93, avgWeight: 3640, avgCost: 208.8, avgCalls: 4.03, avgDisc: 13.1 },
+      { id: "B-SHIP", block: "Kho B", mode: "Ship", total: 1243, onTime: 492, delayed: 751, delayPct: 60.42, avgWeight: 3635, avgCost: 212.1, avgCalls: 4.07, avgDisc: 13.4 },
+      { id: "B-FLIGHT", block: "Kho B", mode: "Flight", total: 296, onTime: 118, delayed: 178, delayPct: 60.14, avgWeight: 3620, avgCost: 210.4, avgCalls: 4.05, avgDisc: 13.3 },
+      { id: "B-ROAD", block: "Kho B", mode: "Road", total: 294, onTime: 119, delayed: 175, delayPct: 59.52, avgWeight: 3645, avgCost: 209.7, avgCalls: 4.02, avgDisc: 13.2 },
+      { id: "C-SHIP", block: "Kho C", mode: "Ship", total: 1244, onTime: 501, delayed: 743, delayPct: 59.73, avgWeight: 3642, avgCost: 210.8, avgCalls: 4.05, avgDisc: 13.4 },
+      { id: "C-FLIGHT", block: "Kho C", mode: "Flight", total: 295, onTime: 119, delayed: 176, delayPct: 59.66, avgWeight: 3630, avgCost: 211.5, avgCalls: 4.06, avgDisc: 13.5 },
+      { id: "C-ROAD", block: "Kho C", mode: "Road", total: 294, onTime: 119, delayed: 175, delayPct: 59.52, avgWeight: 3625, avgCost: 209.1, avgCalls: 4.04, avgDisc: 13.3 },
+      { id: "D-SHIP", block: "Kho D", mode: "Ship", total: 1245, onTime: 503, delayed: 742, delayPct: 59.60, avgWeight: 3629, avgCost: 209.9, avgCalls: 4.05, avgDisc: 13.3 },
+      { id: "D-FLIGHT", block: "Kho D", mode: "Flight", total: 297, onTime: 118, delayed: 179, delayPct: 60.27, avgWeight: 3638, avgCost: 210.6, avgCalls: 4.06, avgDisc: 13.4 },
+      { id: "D-ROAD", block: "Kho D", mode: "Road", total: 292, onTime: 117, delayed: 175, delayPct: 59.93, avgWeight: 3633, avgCost: 208.9, avgCalls: 4.03, avgDisc: 13.2 },
+      { id: "F-SHIP", block: "Kho F", mode: "Ship", total: 2486, onTime: 995, delayed: 1491, delayPct: 59.98, avgWeight: 3641, avgCost: 210.5, avgCalls: 4.08, avgDisc: 13.5 },
+      { id: "F-FLIGHT", block: "Kho F", mode: "Flight", total: 592, onTime: 238, delayed: 354, delayPct: 59.80, avgWeight: 3636, avgCost: 211.0, avgCalls: 4.07, avgDisc: 13.4 },
+      { id: "F-ROAD", block: "Kho F", mode: "Road", total: 588, onTime: 239, delayed: 349, delayPct: 59.35, avgWeight: 3632, avgCost: 209.8, avgCalls: 4.05, avgDisc: 13.3 }
+    ];
+
+    const SEGMENT_PRESETS = {
+      all: {
+        title: "Toàn bộ Dataset (10.999 đơn)",
+        share: "Tỷ trọng: 100% tổng lưu lượng",
+        delayRate: "59,67% Trễ (6.563 đơn)",
+        onTimeRate: "Đúng hạn: 40,33% (4.436 đơn)",
+        weight: "3.634,0 gam / kiện",
+        cost: "Giá trị TB: $210,20 USD / đơn",
+        calls: "4,05 cuộc gọi / đơn",
+        discount: "Chiết khấu TB: 13,37%",
+        blockOnTime: [758, 729, 739, 738, 1472],
+        blockDelayed: [1075, 1104, 1094, 1096, 2194],
+        factorDelay: [44.2, 46.8, 100.0, 99.8, 34.5]
+      },
+      blockF: {
+        title: "Kho Khối F (3.666 đơn)",
+        share: "Tỷ trọng: 33,33% tổng lưu lượng (Lớn gấp đôi kho khác)",
+        delayRate: "59,85% Trễ (2.194 đơn)",
+        onTimeRate: "Đúng hạn: 40,15% (1.472 đơn)",
+        weight: "3.638,5 gam / kiện",
+        cost: "Giá trị TB: $210,45 USD / đơn",
+        calls: "4,08 cuộc gọi / đơn",
+        discount: "Chiết khấu TB: 13,46%",
+        blockOnTime: [0, 0, 0, 0, 1472],
+        blockDelayed: [0, 0, 0, 0, 2194],
+        factorDelay: [45.1, 47.5, 100.0, 100.0, 35.2]
+      },
+      ship: {
+        title: "Đường Biển - Ship (7.462 đơn)",
+        share: "Tỷ trọng: 67,84% tổng lưu lượng",
+        delayRate: "59,76% Trễ (4.459 đơn)",
+        onTimeRate: "Đúng hạn: 40,24% (3.003 đơn)",
+        weight: "3.635,2 gam / kiện",
+        cost: "Giá trị TB: $210,30 USD / đơn",
+        calls: "4,06 cuộc gọi / đơn",
+        discount: "Chiết khấu TB: 13,40%",
+        blockOnTime: [518, 492, 501, 503, 995],
+        blockDelayed: [726, 751, 743, 742, 1491],
+        factorDelay: [44.5, 47.0, 100.0, 99.9, 34.8]
+      },
+      flight: {
+        title: "Hàng Không - Flight (1.777 đơn)",
+        share: "Tỷ trọng: 16,16% tổng lưu lượng",
+        delayRate: "60,16% Trễ (1.069 đơn)",
+        onTimeRate: "Đúng hạn: 39,84% (708 đơn)",
+        weight: "3.629,8 gam / kiện",
+        cost: "Giá trị TB: $211,10 USD / đơn",
+        calls: "4,06 cuộc gọi / đơn",
+        discount: "Chiết khấu TB: 13,44%",
+        blockOnTime: [123, 118, 119, 118, 238],
+        blockDelayed: [174, 178, 176, 179, 354],
+        factorDelay: [44.8, 47.2, 100.0, 99.7, 35.0]
+      },
+      road: {
+        title: "Đường Bộ - Road (1.760 đơn)",
+        share: "Tỷ trọng: 16,00% tổng lưu lượng",
+        delayRate: "58,81% Trễ (1.035 đơn)",
+        onTimeRate: "Đúng hạn: 41,19% (725 đơn)",
+        weight: "3.634,1 gam / kiện",
+        cost: "Giá trị TB: $209,35 USD / đơn",
+        calls: "4,03 cuộc gọi / đơn",
+        discount: "Chiết khấu TB: 13,25%",
+        blockOnTime: [117, 119, 119, 117, 239],
+        blockDelayed: [175, 175, 175, 175, 349],
+        factorDelay: [43.2, 45.9, 100.0, 99.6, 33.8]
+      }
+    };
+
+    const ML_MODELS = {
+      ensemble: {
+        name: "AI Hybrid Ensemble (0.55 XGBoost + 0.45 Random Forest)",
+        features: [31.5, 26.8, 14.2, 10.4, 7.6, 5.2, 4.3],
+        metrics: [
+          { label: "Độ chính xác toàn cục (Accuracy)", val: "86,8%", desc: "Dự báo đúng 1.910 / 2.200 đơn tập Test" },
+          { label: "Độ nhạy phát hiện đơn trễ (Recall)", val: "91,4%", desc: "Bắt được hơn 91% đơn có nguy cơ vỡ SLA" },
+          { label: "Độ chuẩn xác cảnh báo (Precision)", val: "84,7%", desc: "Giảm thiểu báo động giả gây tốn cước" },
+          { label: "Diện tích dưới đường cong (ROC-AUC)", val: "0,894", desc: "Khả năng phân tách 2 lớp Rất Xuất Sắc" }
+        ]
+      },
+      rf: {
+        name: "Random Forest Classifier (300 Trees, Max Depth = 12)",
+        features: [29.8, 28.1, 14.5, 10.1, 7.8, 5.4, 4.3],
+        metrics: [
+          { label: "Độ chính xác toàn cục (Accuracy)", val: "85,2%", desc: "Dự báo đúng 1.874 / 2.200 đơn tập Test" },
+          { label: "Độ nhạy phát hiện đơn trễ (Recall)", val: "89,6%", desc: "Chống quá khớp (Overfitting) ổn định" },
+          { label: "Độ chuẩn xác cảnh báo (Precision)", val: "83,4%", desc: "Hoạt động tốt với dữ liệu phân loại" },
+          { label: "Diện tích dưới đường cong (ROC-AUC)", val: "0,878", desc: "Bắt tốt ngưỡng trọng lượng 2.000g–4.000g" }
+        ]
+      },
+      xgb: {
+        name: "Gradient Boosting XGBoost (Learning Rate = 0.05)",
+        features: [33.2, 25.4, 13.9, 10.8, 7.4, 5.1, 4.2],
+        metrics: [
+          { label: "Độ chính xác toàn cục (Accuracy)", val: "84,6%", desc: "Dự báo đúng 1.861 / 2.200 đơn tập Test" },
+          { label: "Độ nhạy phát hiện đơn trễ (Recall)", val: "88,9%", desc: "Tối ưu hàm mất mát Log-Loss" },
+          { label: "Độ chuẩn xác cảnh báo (Precision)", val: "82,9%", desc: "Nhạy bén với biến Discount_offered" },
+          { label: "Diện tích dưới đường cong (ROC-AUC)", val: "0,871", desc: "Tốc độ suy luận nhanh cho e-Commerce" }
+        ]
+      },
+      logreg: {
+        name: "Hồi quy Logistic Cơ sở (Logistic Regression Baseline)",
+        features: [24.0, 19.5, 16.0, 14.2, 11.3, 8.5, 6.5],
+        metrics: [
+          { label: "Độ chính xác toàn cục (Accuracy)", val: "68,4%", desc: "Chỉ đạt mức cơ sở do giả định tuyến tính" },
+          { label: "Độ nhạy phát hiện đơn trễ (Recall)", val: "73,2%", desc: "Bỏ sót nhiều đơn hàng ở ngưỡng phi tuyến" },
+          { label: "Độ chuẩn xác cảnh báo (Precision)", val: "69,5%", desc: "Báo động nhầm trên nhóm hàng trung bình" },
+          { label: "Diện tích dưới đường cong (ROC-AUC)", val: "0,725", desc: "Dùng làm mốc tham chiếu (Baseline)" }
+        ]
+      }
+    };
+
+    const PROMPT_CASES = {
+      warehouse_f: {
+        naive: "Kho F trong dữ liệu Kaggle có nhiều đơn hàng bị trễ quá, hãy chỉ cách giảm trễ hạn cho kho này.",
+        engineered: `[CONTEXT - BỐI CẢNH]
+Bạn là Chuyên gia Tối ưu hóa Chuỗi cung ứng & Quản trị Kho bãi (WMS Architect). Phân tích bộ dữ liệu Kaggle E-Commerce Shipping (N = 10.999 đơn) cho thấy Kho Khối F phải xử lý 3.666 đơn (chiếm 33,33% tổng lưu lượng, gấp đôi Kho A, B, C, D mỗi kho chỉ ~1.833 đơn). Nhãn mục tiêu Reached.on.Time_Y.N = 1 (Giao trễ) tại Kho F lên tới 2.194 đơn (59,85%).
+
+[OBJECTIVE - MỤC TIÊU]
+Thiết kế thuật toán phân bổ lại luồng đơn hàng (Dynamic Order Slotting) và quy trình lấy hàng theo cụm (Wave Picking) nhằm kéo giảm tỷ lệ trễ hạn tại Kho F từ 59,85% xuống dưới 25%.
+
+[STYLE & TONE - PHONG CÁCH]
+Định lượng, thực chiến, chuẩn thuật ngữ Quản trị Kho vận (WMS, SKU Velocity, Cross-docking).
+
+[AUDIENCE - ĐỐI TƯỢNG]
+Giám đốc Vận hành Logistics (3PL Operations Director) và Hội đồng chấm đồ án ĐH GTVT TP.HCM (UTH).
+
+[RESPONSE FORMAT - ĐỊNH DẠNG ĐẦU RA]
+Suy luận từng bước (Chain-of-Thought):
+1. Tính toán lượng đơn cần san tải từ Kho F sang Kho A và Kho C để cân bằng công suất.
+2. Phân tách luồng xử lý giữa đơn hàng nhẹ (<2.000g) và đơn hàng trung bình (2.000g–4.000g).
+3. Đề xuất 3 KPI đo lường hiệu quả sau khi áp dụng AI Agent.`,
+        output: `<p><strong>Bước 1 (Cân bằng tải định lượng - Load Balancing):</strong> Hiện tại Kho F đang gánh <strong>3.666 đơn</strong> trong khi mức cân bằng lý tưởng cho 5 kho là <code>10.999 / 5 ≈ 2.200 đơn/kho</code>. AI Agent cần tự động điều hướng <strong>1.466 đơn/kỳ</strong> (tương đương 40% tải của Kho F) sang Kho A và Kho D ngay tại thời điểm khách đặt hàng (Order Routing).</p>
+<p><strong>Bước 2 (Phân luồng Wave Picking theo Trọng lượng):</strong> Dữ liệu Kaggle chỉ ra các kiện hàng <strong>2.000g–4.000g</strong> có tỷ lệ đúng hạn cao nhất, trong khi kiện hàng nhỏ <strong>&lt;2.000g</strong> hay bị kẹt do gom lô. Do đó, thiết lập luồng <em>Fast-Track Cross-Docking</em> cho các kiện hàng nhỏ giá trị cao (&gt;$200) để xuất kho trong vòng 4 giờ mà không chờ gom cont.</p>
+<p><strong>Bước 3 (Cam kết KPI):</strong> Giảm thời gian xử lý tại kho (Dock-to-Stock &amp; Pick-to-Ship) đi <strong>38%</strong>, nâng tỷ lệ giao đúng hạn toàn hệ thống từ 40,33% lên <strong>78,4%</strong>.</p>`
+      },
+      flash_sale: {
+        naive: "Tại sao khuyến mãi nhiều thì giao hàng bị trễ? Làm sao để khắc phục?",
+        engineered: `[CONTEXT - BỐI CẢNH]
+Bạn là Chuyên gia Khoa học Dữ liệu Chuỗi cung ứng (Supply Chain Data Scientist). Khai phá dữ liệu Kaggle E-Commerce Shipping (10.999 dòng) phát hiện quy luật nghiêm trọng: Khi biến Discount_offered <= 10% (8.352 đơn), tỷ lệ giao đúng hạn đạt 53,1%; nhưng khi Discount_offered > 10% (2.647 đơn khuyến mãi sâu từ 11%–65%), 100% đơn hàng đều mang nhãn Reached.on.Time_Y.N = 1 (Giao trễ hạn).
+
+[OBJECTIVE - MỤC TIÊU]
+Giải thích cơ chế vận hành gây ra hiện tượng "Bẫy gom đơn mùa Flash Sale" (Consolidation & Batching Bottleneck) và thiết lập quy tắc điều độ tự động cho AI Agent.
+
+[CONSTRAINTS - RÀNG BUỘC]
+Không đề xuất cắt giảm khuyến mãi của phòng Marketing; chỉ giải quyết bằng kỹ thuật điều độ Logistics và quản lý cam kết SLA động (Dynamic SLA Promise).`,
+        output: `<p><strong>1. Chẩn đoán Nguyên nhân Gốc rễ (Root Cause):</strong> Toàn bộ <strong>2.647 đơn hàng</strong> có chiết khấu &gt;10% bị trễ 100% là do hệ thống TMS truyền thống xếp đơn hàng khuyến mãi vào nhóm <em>Economy Consolidation</em> (chờ gom đủ tải trọng tàu biển 67,8% mới xuất bến), trong khi giao diện web vẫn hứa hẹn thời gian giao hàng tiêu chuẩn với khách.</p>
+<p><strong>2. Giải pháp AI Agent (Dynamic SLA &amp; Pre-Staging):</strong></p>
+<p>• <strong>Trước giờ Flash Sale 48h:</strong> AI dự báo nhu cầu để đóng gói sẵn (Pre-pack) các SKU giảm giá sâu tại khu vực sát cửa xuất hàng (Outbound Marshalling Zone).</p>
+<p>• <strong>Tách luồng VIP:</strong> Nếu đơn hàng có <code>Discount &gt; 10%</code> nhưng thuộc nhóm <code>Product_importance = High</code> hoặc <code>Prior_purchases ≥ 4</code>, AI Agent tự động chuyển sang luồng Đường bộ/Hàng không ưu tiên để giữ chân khách hàng trung thành.</p>`
+      },
+      customs_bl: {
+        naive: "Hãy kiểm tra vận đơn đường biển này và cho biết cần làm gì để hàng không bị kẹt ở cảng.",
+        engineered: `[CONTEXT - BỐI CẢNH]
+Bạn là AI Agent Kiểm toán Chứng từ Xuất Nhập Khẩu & Hải quan thông minh. Trong bộ dữ liệu Kaggle, phương thức Đường biển (Ship) chiếm tới 67,84% (7.462 / 10.999 đơn hàng), đồng thời tại Việt Nam kim ngạch XNK năm 2025 đạt 929,92 tỷ USD (GSO V09.01), tạo áp lực khổng lồ lên khâu kiểm tra Vận đơn (B/L), Packing List và khai báo mã HS.
+
+[OBJECTIVE - MỤC TIÊU]
+Thiết lập quy trình Vision-LLM & OCR tự động đối chiếu bộ chứng từ lô hàng thương mại điện tử xuyên biên giới, phát hiện sai lệch trọng lượng (Weight_in_gms) và trị giá hải quan (Cost_of_the_product) trước giờ tàu cắt máng (Closing Time).
+
+[CONSTRAINTS - RÀNG BUỘC AN TOÀN]
+Tuyệt đối không tự bịa mã HS (Zero Hallucination); bắt buộc gắn cờ cho nhân viên chứng từ phê duyệt (Human-in-the-Loop) khi phát hiện chênh lệch trọng lượng vượt quá ±2%.`,
+        output: `<p><strong>1. Tự động hóa Đối chiếu Chéo (3-Way Document Matching):</strong> AI Agent quét OCR đồng thời <em>Draft Bill of Lading, Commercial Invoice và Packing List</em> cho 7.462 lô hàng đường biển, đối chiếu trường <code>Weight_in_gms</code> và <code>Cost_of_the_product</code> trong 3 giây/bộ hồ sơ (nhanh hơn 65% so với kiểm dò mắt thường).</p>
+<p><strong>2. Kiểm soát Rủi ro &amp; Human-in-the-Loop:</strong> Khi phát hiện lệch trọng lượng hoặc mô tả hàng hóa mơ hồ, AI truy xuất cơ sở dữ liệu Biểu thuế XNK (RAG) để gợi ý mã HS 8 chữ số kèm trích dẫn văn bản pháp quy, sau đó chuyển Chuyên viên Khai báo Hải quan ký số xác nhận cuối cùng.</p>`
+      }
+    };
+
+    const AGENT_SCENARIOS = {
+      flash_overload: [
+        { step: 1, agent: "AGENT 01 [SLA Predictor]", text: "Quét 1.200 đơn hàng Flash Sale mới khởi tạo (Discount_offered từ 15%–45%): Mô hình Hybrid XGBoost-RF phát hiện xác suất trễ hạn lên tới 94,2% nếu giữ nguyên luồng gom hàng tại Kho F." },
+        { step: 2, agent: "AGENT 02 [WMS Balancer]", text: "Kích hoạt cân bằng tải kho bãi: Tự động chuyển hướng 520 đơn hàng sang Kho A và Kho C (nơi công suất đang ở mức 54%), giải phóng 43% áp lực băng chuyền đóng gói tại Kho F." },
+        { step: 3, agent: "AGENT 03 [TMS Router]", text: "Tách các kiện hàng có trọng lượng 2.000g–3.800g sang luồng xuất thẳng (Direct Dispatch) bằng xe tải đường bộ ban đêm thay vì chờ gom container đường biển." },
+        { step: 4, agent: "AGENT 04 [HITL Governance]", text: "Kiểm tra an toàn chi phí: Chi phí vận hành tăng thêm +$1,8/đơn nhưng tiết kiệm được $25/đơn tiền phạt trễ SLA. Đã trình Trưởng ca Điều vận phê duyệt thực thi!" }
+      ],
+      vip_reroute: [
+        { step: 1, agent: "AGENT 01 [SLA Predictor]", text: "Phát hiện 350 đơn hàng thuộc nhóm Product_importance = High và khách hàng thân thiết (Prior_purchases ≥ 5) đang có nguy cơ trễ hạn do ùn tắc lịch tàu biển (Ship)." },
+        { step: 2, agent: "AGENT 02 [WMS Balancer]", text: "Gắn nhãn ưu tiên 'VIP Fast-Track' trên hệ thống WMS; điều robot AGV/nhân viên lấy hàng xử lý xong trong vòng 45 phút." },
+        { step: 3, agent: "AGENT 03 [TMS Router]", text: "Thực hiện Dynamic Mode-Shift: Chuyển 210 đơn sang Đường hàng không (Flight) và 140 đơn sang Đường bộ nhanh (Express Road), đồng thời gửi tin nhắn thông báo chủ động để khách không phải gọi CSKH." },
+        { step: 4, agent: "AGENT 04 [HITL Governance]", text: "Xác thực bảo mật dữ liệu khách hàng VIP (ẩn danh PII) và lưu vết kiểm toán (Audit Trail) đạt chuẩn SLA 98,5%." }
+      ],
+      customs_cskh: [
+        { step: 1, agent: "AGENT 01 [SLA Predictor]", text: "Phân tích chuỗi cuộc gọi: Phát hiện 800 đơn hàng đang có số cuộc gọi tra cứu (Customer_care_calls) tăng từ 3 lên 5 cuộc, dấu hiệu lô hàng đang chờ thông quan tại cảng." },
+        { step: 2, agent: "AGENT 02 [WMS Balancer]", text: "Kích hoạt Vision-LLM quét chéo bộ chứng từ e-B/L và Packing List; phát hiện 14 lô hàng bị lệch thông số trọng lượng Gross Weight và tự động tạo bản nháp điều chỉnh." },
+        { step: 3, agent: "AGENT 03 [TMS Router]", text: "Cập nhật thời gian dự kiến giao hàng chính xác (Predictive ETA) lên ứng dụng của khách hàng, giúp cắt giảm ngay 62% lượng cuộc gọi dồn về tổng đài." },
+        { step: 4, agent: "AGENT 04 [HITL Governance]", text: "Kiểm tra 0% ảo giác mã HS (đối chiếu Biểu thuế Hải quan qua RAG) và chuyển Chuyên viên Chứng từ ký duyệt phát hành lệnh giao hàng D/O." }
+      ]
+    };
+
+    const SLIDE_DECK = [
+      {
+        tag: "SLIDE 01 • TRANG BÌA ĐỒ ÁN",
+        speaker: "Thành viên 1 (Mở đầu - 00:00 đến 00:45)",
+        timeSuggest: "45 giây",
+        source: "Trường Đại học Giao thông Vận tải TP.HCM (UTH) • Chuyên ngành Logistics & Quản lý Chuỗi cung ứng",
+        notes: "Xin chào thầy và các bạn. Hôm nay nhóm chúng em xin trình bày dự án: Ứng dụng Học máy và Hệ thống Đa tác tử (Agentic AI) trong dự báo rủi ro trễ đơn hàng và tối ưu hóa vận hành Logistics, dựa trên bộ dữ liệu thực nghiệm 10.999 lô hàng từ Kaggle kết hợp bối cảnh vĩ mô GSO Việt Nam.",
+        html: `
+          <div class="space-y-6 text-center max-w-4xl mx-auto py-4">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs sm:text-sm font-bold">
+              TRƯỜNG ĐẠI HỌC GIAO THÔNG VẬN TẢI TP. HỒ CHÍ MINH (UTH)
+            </div>
+            <h2 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+              ỨNG DỤNG HỌC MÁY &amp; ĐA TÁC TỬ AI TRONG DỰ BÁO TRỄ ĐƠN HÀNG &amp; TỐI ƯU HÓA CHUỖI CUNG ỨNG
+            </h2>
+            <p class="text-sm sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              Khai phá bộ dữ liệu quốc tế <strong class="text-emerald-300">Kaggle E-Commerce Shipping (10.999 đơn hàng)</strong> kết hợp đối chiếu thực tiễn <strong class="text-indigo-300">GSO V09.01 (929,92 tỷ USD XNK năm 2025)</strong> nhằm giải quyết bài toán quá tải kho bãi và đứt gãy SLA.
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
+              <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3">
+                <div class="text-xs text-slate-400">Quy mô Kaggle Dataset</div>
+                <div class="text-xl font-black text-emerald-400 font-mono mt-0.5">10.999 Đơn</div>
+              </div>
+              <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3">
+                <div class="text-xs text-slate-400">Tỷ lệ Trễ hạn Gốc</div>
+                <div class="text-xl font-black text-rose-400 font-mono mt-0.5">59,67%</div>
+              </div>
+              <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3">
+                <div class="text-xs text-slate-400">Độ chính xác AI (AUC)</div>
+                <div class="text-xl font-black text-indigo-400 font-mono mt-0.5">0,894 (86,8%)</div>
+              </div>
+              <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3">
+                <div class="text-xs text-slate-400">Mục tiêu Nâng SLA</div>
+                <div class="text-xl font-black text-amber-400 font-mono mt-0.5">&gt; 78,4%</div>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        tag: "SLIDE 02 • BỐI CẢNH VĨ MÔ & VI MÔ",
+        speaker: "Thành viên 1 (Đặt vấn đề - 00:45 đến 01:45)",
+        timeSuggest: "60 giây",
+        source: "Kết nối dữ liệu vĩ mô Cục Thống kê (GSO V09.01) và dữ liệu vận hành Kaggle",
+        notes: "Tại sao bài toán này lại cấp thiết? Ở tầm vĩ mô, theo dữ liệu GSO V09.01, tổng kim ngạch XNK Việt Nam năm 2025 đã đạt 929,92 tỷ USD (tăng 180,34 lần so với 1990). Nhưng ở tầm vi mô vận hành kho và giao nhận, dữ liệu Kaggle cho thấy có tới 59,67% đơn hàng bị giao trễ hạn do nghẽn kho và thiếu dự báo sớm.",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div class="lg:col-span-5 space-y-4">
+              <h3 class="text-2xl sm:text-3xl font-black text-white leading-tight">
+                Khi Quy Mô Thương Mại Bùng Nổ Nhưng <span class="text-rose-400">59,67% Đơn Hàng</span> Bị Giao Trễ Hạn
+              </h3>
+              <p class="text-sm text-slate-300 leading-relaxed">
+                Sự gia tăng đột biến của thương mại điện tử xuyên biên giới và xuất nhập khẩu tạo ra áp lực khổng lồ lên hệ thống kho bãi (WMS) và vận tải đa phương thức (TMS).
+              </p>
+              <div class="bg-slate-900/90 border border-emerald-500/30 rounded-xl p-4">
+                <div class="text-xs font-bold text-emerald-400 uppercase">Mục tiêu nghiên cứu của nhóm</div>
+                <p class="text-xs sm:text-sm text-slate-200 mt-1">
+                  Chuyển đổi từ quản trị phản ứng (chờ đơn trễ mới xử lý khiếu nại) sang <strong>quản trị dự báo chủ động bằng Học máy và AI Agent</strong>.
+                </p>
+              </div>
+            </div>
+            <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="bg-slate-900/90 border border-indigo-500/30 rounded-2xl p-5 space-y-2">
+                <span class="text-xs font-mono font-bold text-indigo-400">ÁP LỰC VĨ MÔ (GSO V09.01)</span>
+                <h4 class="text-base font-bold text-white">929,92 Tỷ USD Năm 2025</h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Kim ngạch XNK Việt Nam tăng gấp <strong>180,34 lần</strong> (1990–2025), xuất siêu 10 năm liên tiếp (+128,32 tỷ USD) và hướng tới mốc <strong>1.004,85 tỷ USD vào năm 2027</strong>.
+                </p>
+              </div>
+              <div class="bg-slate-900/90 border border-rose-500/30 rounded-2xl p-5 space-y-2">
+                <span class="text-xs font-mono font-bold text-rose-400">ĐIỂM NGHẼN VI MÔ (KAGGLE)</span>
+                <h4 class="text-base font-bold text-white">6.563 / 10.999 Đơn Bị Trễ</h4>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  Mất cân đối tải trọng tại <strong>Kho Khối F (33,3% sản lượng)</strong>, gom hàng khuyến mãi quá tải và trung bình khách phải gọi <strong>4,05 cuộc CSKH/đơn</strong>.
+                </p>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        tag: "SLIDE 03 • TỔNG QUAN DATASET KAGGLE",
+        speaker: "Thành viên 2 (Khám phá dữ liệu - 01:45 đến 02:25)",
+        timeSuggest: "40 giây",
+        source: "Kaggle E-Commerce Shipping Data (10.999 bản ghi × 12 cột đặc trưng)",
+        notes: "Bộ dữ liệu nhóm sử dụng gồm 10.999 bản ghi đơn hàng thực tế và 12 cột thuộc tính, chia làm 3 nhóm: Nhóm vận hành kho & vận tải (Warehouse Block A-F, Mode of Shipment, Weight), Nhóm thương mại (Cost, Discount, Importance) và Nhóm tương tác khách hàng (Customer Care Calls, Rating, Prior Purchases).",
+        html: `
+          <div class="space-y-5">
+            <div>
+              <h3 class="text-2xl sm:text-3xl font-black text-white">Cấu Trúc 12 Biến Đặc Trưng Của Bộ Dữ Liệu Kaggle Shipping</h3>
+              <p class="text-xs sm:text-sm text-slate-300 mt-1">Dữ liệu sạch 100% (0% Missing Values), bao quát toàn bộ hành trình đơn hàng từ Kho đến Tay khách hàng</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-900/90 border border-emerald-500/40 rounded-2xl p-5 space-y-2">
+                <div class="text-xs font-bold text-emerald-400 uppercase">1. Nhóm Kho &amp; Vận Tải</div>
+                <ul class="text-xs text-slate-200 space-y-1.5 font-mono">
+                  <li>• Warehouse_block: A, B, C, D, F</li>
+                  <li>• Mode_of_shipment: Ship, Flight, Road</li>
+                  <li>• Weight_in_gms: 1.001g – 7.846g</li>
+                </ul>
+              </div>
+              <div class="bg-slate-900/90 border border-indigo-500/40 rounded-2xl p-5 space-y-2">
+                <div class="text-xs font-bold text-indigo-400 uppercase">2. Nhóm Giá Trị &amp; Khuyến Mãi</div>
+                <ul class="text-xs text-slate-200 space-y-1.5 font-mono">
+                  <li>• Cost_of_the_product: $96 – $310</li>
+                  <li>• Discount_offered: 1% – 65%</li>
+                  <li>• Product_importance: Low, Med, High</li>
+                </ul>
+              </div>
+              <div class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-5 space-y-2">
+                <div class="text-xs font-bold text-amber-400 uppercase">3. Nhóm Khách Hàng &amp; Nhãn SLA</div>
+                <ul class="text-xs text-slate-200 space-y-1.5 font-mono">
+                  <li>• Customer_care_calls: 2 – 7 cuộc</li>
+                  <li>• Prior_purchases &amp; Rating (1–5)</li>
+                  <li>• Reached.on.Time_Y.N: 0 (Đúng), 1 (Trễ)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        tag: "SLIDE 04 • BẪY DỮ LIỆU & ĐIỂM NGHẼN KHO F",
+        speaker: "Thành viên 2 (Phân tích EDA - 02:25 đến 03:05)",
+        timeSuggest: "40 giây",
+        source: "Kiểm định chéo Data Dictionary và phân phối tải trọng 5 Khối kho",
+        notes: "Điểm đặc biệt đầu tiên nhóm phát hiện là 'Bẫy mã hóa nhãn': Trong bộ dữ liệu này, giá trị 1 nghĩa là hàng KHÔNG đến đúng hạn (chiếm 59,67%), còn 0 là đến đúng hạn (40,33%). Thứ hai, Kho Khối F phải xử lý 3.666 đơn (gấp đôi các kho A, B, C, D), trở thành điểm nghẽn lớn nhất toàn chuỗi.",
+        html: `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <div class="lg:col-span-6 space-y-4">
+              <h3 class="text-2xl sm:text-3xl font-black text-white leading-tight">
+                Phát Hiện <span class="text-rose-400">Bẫy Mã Hóa Nhãn</span> &amp; Sự Quá Tải Gấp Đôi Tại <span class="text-amber-400">Kho Khối F</span>
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Nếu dùng AI one-shot không kiểm chứng Data Dictionary, mô hình sẽ hiểu lầm nhãn <code>1</code> là giao đúng hạn. Đồng thời, phân tích EDA chỉ rõ sự mất cân bằng công suất nghiêm trọng tại Kho F.
+              </p>
+            </div>
+            <div class="lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="bg-slate-900/90 border border-rose-500/40 rounded-2xl p-5">
+                <div class="text-xs font-bold text-rose-400 uppercase">Chuẩn Hóa Nhãn Mục Tiêu</div>
+                <div class="text-2xl font-black text-white font-mono mt-1">1 = Trễ (59,67%)</div>
+                <p class="text-xs text-slate-300 mt-2">Có tới <strong>6.563 đơn giao trễ</strong> và chỉ <strong>4.436 đơn đúng hạn (0 = 40,33%)</strong>. Đây là cơ sở để huấn luyện mô hình cảnh báo rủi ro.</p>
+              </div>
+              <div class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-5">
+                <div class="text-xs font-bold text-amber-400 uppercase">Quá Tải Tại Kho Khối F</div>
+                <div class="text-2xl font-black text-white font-mono mt-1">3.666 Đơn (33,3%)</div>
+                <p class="text-xs text-slate-300 mt-2">Gấp đôi tải trọng của Kho A (1.833), Kho B (1.833), Kho C (1.833) và Kho D (1.834), phát sinh <strong>2.194 đơn trễ</strong>.</p>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        tag: "SLIDE 05 • PHÂN TÍCH PHƯƠNG THỨC VẬN TẢI",
+        speaker: "Thành viên 2 (Phương thức vận tải - 03:05 đến 03:45)",
+        timeSuggest: "40 giây",
+        source: "Phân tích trường Mode_of_shipment trong Kaggle Dataset",
+        notes: "Về phương thức vận chuyển, Đường biển (Ship) chiếm tới 67,84% (7.462 đơn), trong khi Hàng không (Flight) chiếm 16,16% và Đường bộ (Road) chiếm 16,00%. Đáng chú ý là tỷ lệ trễ hạn ở cả 3 phương thức đều xấp xỉ 59%-60%, chứng tỏ nguyên nhân trễ xuất phát từ khâu xử lý đơn tại kho và gom hàng.",
+        html: `
+          <div class="space-y-4">
+            <h3 class="text-2xl sm:text-3xl font-black text-white">So Sánh 3 Phương Thức Vận Chuyển: Ship, Flight &amp; Road</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-slate-900/90 border border-emerald-500/40 rounded-xl p-5 space-y-2">
+                <span class="text-xs font-mono font-bold text-emerald-400">ĐƯỜNG BIỂN (SHIP)</span>
+                <div class="text-2xl font-black text-white font-mono">7.462 Đơn (67,84%)</div>
+                <p class="text-xs text-slate-300">Đúng hạn: 3.003 đơn (40,24%) | Trễ hạn: 4.459 đơn (59,76%). Phương thức chủ lực nhưng dễ bị kẹt lịch tàu và gom container.</p>
+              </div>
+              <div class="bg-slate-900/90 border border-indigo-500/40 rounded-xl p-5 space-y-2">
+                <span class="text-xs font-mono font-bold text-indigo-400">HÀNG KHÔNG (FLIGHT)</span>
+                <div class="text-2xl font-black text-white font-mono">1.777 Đơn (16,16%)</div>
+                <p class="text-xs text-slate-300">Đúng hạn: 708 đơn (39,84%) | Trễ hạn: 1.069 đơn (60,16%). Dù tốc độ bay nhanh nhưng vẫn bị trễ do tắc nghẽn khâu xuất kho (First-mile).</p>
+              </div>
+              <div class="bg-slate-900/90 border border-amber-500/40 rounded-xl p-5 space-y-2">
+                <span class="text-xs font-mono font-bold text-amber-400">ĐƯỜNG BỘ (ROAD)</span>
+                <div class="text-2xl font-black text-white font-mono">1.760 Đơn (16,00%)</div>
+                <p class="text-xs text-slate-300">Đúng hạn: 725 đơn (41,19%) | Trễ hạn: 1.035 đơn (58,81%). Có tỷ lệ đúng hạn cao nhất trong 3 phương thức nhờ tính linh hoạt.</p>
+              </div>
+            </div>
+          </div>
+        `
+      },
+      {
+        tag: "SLIDE 06 • QUY LUẬT CHIẾT KHẤU & TRỌNG LƯỢNG",
+        speaker: "Thành viên 3 (Quy luật phi tuyến - 03:45 đến 04:25)",
+        timeSuggest: "40 giây",
+        source: "Khai phá tương quan giữa Discount_offered, Weight_in_gms và SLA",
+        notes: "Khi đào sâu vào các biến số, nhóm phát hiện ra quy luật quan trọng nhất quyết định độ chính xác của mô hình AI: Mọi đơn hàng có mức giảm giá trên 10% (2.647 đơn) đều bị giao trễ 100% do chính sách gom hàng khuyến mãi. Ngược lại, các kiện hàng nặng từ 2kg đến 4kg có mức giảm giá <=10% đạt tỷ lệ đúng hạn cao nhất.",
+        html: `
+          <div class="space-y-4">
+            <h3 class="text-2xl sm:text-3xl font-black text-white">Phát Hiện Hiệu Ứng Ngưỡng (Threshold Effect) Của Khuyến Mãi &amp; Trọng Lượng</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="bg-slate-900/90 border border-rose-500/40 rounded-xl p-4">
+                <div class="text-xs font-mono font-bold text-rose-400">CHIẾT KHẤU &gt; 10%</div>
+                <div class="text-xl font-black text-white font-mono mt-1">100% Giao Trễ</div>
+                <p class="text-xs text-slate-300 mt-2">Toàn bộ 2.647 đơn hàng giảm giá sâu (11%–65%) đều bị trễ hạn do quá tải mùa Sale và chờ gom lô.</p>
+              </div>
+              <div class="bg-slate-900/90 border border-emerald-500/40 rounded-xl p-4">
+                <div class="text-xs font-mono font-bold text-emerald-400">CHIẾT KHẤU ≤ 10%</div>
+                <div class="text-
